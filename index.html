@@ -2,15 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<!-- Font Awesome 6 (free) -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Font Awesome 6 (أيقونات مجانية) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<!-- Google Fonts: Cairo + Inter -->
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<title>نظام تتبع مظاريف الاختبارات | النسخة الاحترافية</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<title>نظام تتبع مظاريف الاختبارات – الإصدار المتطور</title>
 <style>
-  /* ===== RESET & GLOBAL ===== */
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+
   * {
     margin: 0;
     padding: 0;
@@ -18,719 +17,1298 @@
   }
 
   :root {
-    --primary-dark: #0A2540;      /* Navy deep */
-    --primary-mid: #1C3E5C;
-    --primary-light: #2D5A7F;
-    --gold: #F5A623;
-    --gold-dark: #D48F1C;
-    --gold-light: #FDE9D9;
-    --bg-page: #F8FAFE;
-    --card-white: #FFFFFF;
-    --text-dark: #1A2C3E;
-    --text-muted: #5A6E85;
-    --border-light: #E2E8F0;
-    --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
-    --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
-    --shadow-lg: 0 20px 35px -12px rgba(0,0,0,0.15);
-    --gradient-gold: linear-gradient(135deg, #F5A623 0%, #E88D1D 100%);
-    --gradient-navy: linear-gradient(135deg, #0A2540 0%, #1C3E5C 100%);
-    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    --radius-sm: 10px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
+    --navy: #0D1F3C;
+    --navyM: #162D52;
+    --navyL: #1E3E6E;
+    --gold: #C8911F;
+    --goldL: #F0B429;
+    --bg: #F4F7FC;
+    --white: #FFFFFF;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --mid: #475569;
+    --muted: #94A3B8;
+    --green: #15803D;
+    --greenBg: #DCFCE7;
+    --red: #DC2626;
+    --redBg: #FEE2E2;
+    --amber: #D97706;
+    --amberBg: #FEF3C7;
+    --blue: #2563EB;
+    --blueBg: #DBEAFE;
+    --purple: #7C3AED;
+    --purBg: #EDE9FE;
+    --wa: #25D366;
+    --waBg: #DCFCE7;
   }
 
   body {
-    font-family: 'Cairo', 'Inter', sans-serif;
-    background: var(--bg-page);
-    color: var(--text-dark);
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    direction: rtl;
     min-height: 100vh;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
   }
 
-  /* custom scroll */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: var(--border-light);
-    border-radius: 10px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--primary-mid);
-    border-radius: 10px;
-  }
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--border); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 10px; }
 
-  /* ===== LOGIN SCREEN (glassmorphism) ===== */
+  /* login screen */
   #loginScreen {
     min-height: 100vh;
-    background: var(--gradient-navy);
+    background: linear-gradient(145deg, var(--navy) 0%, var(--navyL) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    position: relative;
-    overflow: hidden;
   }
-  #loginScreen::before {
-    content: "";
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at 20% 40%, rgba(245,166,35,0.08) 0%, transparent 60%);
-    animation: slowMove 20s infinite;
-  }
-  @keyframes slowMove {
-    0% { transform: translate(-10%, -10%);}
-    100% { transform: translate(10%, 10%);}
-  }
+
   .loginBox {
-    background: rgba(255,255,255,0.97);
-    backdrop-filter: blur(2px);
-    border-radius: var(--radius-lg);
+    background: var(--white);
+    border-radius: 28px;
     padding: 44px 36px;
-    width: 400px;
+    width: 380px;
     max-width: 100%;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid rgba(255,255,255,0.3);
-    transition: var(--transition);
-    z-index: 2;
+    box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+    backdrop-filter: blur(4px);
   }
+
   .loginLogo {
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
   }
+
   .loginLogo .icon {
     font-size: 56px;
-    background: var(--gradient-gold);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    display: inline-block;
-    margin-bottom: 12px;
+    display: block;
+    margin-bottom: 8px;
+    color: var(--gold);
   }
+
   .loginLogo h1 {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--primary-dark);
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--navy);
   }
+
+  .loginLogo p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
   .demoRow {
     display: flex;
     align-items: center;
-    gap: 12px;
-    background: #F1F5F9;
-    border-radius: 60px;
-    padding: 8px 16px;
+    gap: 8px;
+    padding: 6px 0;
+    background: none;
     border: none;
     cursor: pointer;
     width: 100%;
     text-align: right;
-    transition: var(--transition);
-    margin-bottom: 6px;
-  }
-  .demoRow:hover {
-    background: #E2E8F0;
-    transform: translateX(-4px);
-  }
-  .roleTag {
-    padding: 4px 14px;
-    border-radius: 60px;
-    font-size: 11px;
-    font-weight: 800;
+    border-radius: 12px;
+    transition: background 0.2s;
   }
 
-  /* ===== APP SHELL ===== */
+  .demoRow:hover {
+    background: var(--bg);
+  }
+
+  .roleTag {
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .demoMono {
+    font-size: 11px;
+    color: var(--mid);
+    font-family: monospace;
+  }
+
+  /* app shell */
   #appShell {
     display: none;
     min-height: 100vh;
     flex-direction: column;
   }
-  /* header with glass */
+
   #appHeader {
-    background: rgba(10,37,64,0.92);
-    backdrop-filter: blur(10px);
-    padding: 0 28px;
+    background: var(--navy);
+    padding: 0 24px;
     height: 64px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     flex-shrink: 0;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 50;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
+
   #appHeader .hLogo {
     font-size: 28px;
-    background: var(--gradient-gold);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--goldL);
   }
+
   #appHeader .hTitle {
-    color: white;
+    color: #fff;
     font-weight: 800;
-    font-size: 16px;
+    font-size: 18px;
     flex: 1;
-    letter-spacing: -0.2px;
   }
+
   #appHeader .hRole {
-    padding: 5px 16px;
+    padding: 4px 14px;
     border-radius: 40px;
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 700;
   }
+
+  #appHeader .hUser {
+    color: #A0C0E0;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
   #appHeader .hLogout {
     background: rgba(220,38,38,0.2);
-    border: 1px solid rgba(220,38,38,0.5);
-    color: #FFDCDC;
+    border: none;
+    color: #ff8a8a;
     cursor: pointer;
     font-size: 13px;
     font-weight: 700;
-    padding: 6px 16px;
-    border-radius: 40px;
-    transition: var(--transition);
+    padding: 6px 12px;
+    border-radius: 30px;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
+
   #appHeader .hLogout:hover {
     background: #DC2626;
     color: white;
   }
 
-  /* navigation modern */
+  /* nav */
   #appNav {
-    background: white;
-    border-bottom: 1px solid var(--border-light);
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
     display: flex;
     padding: 0 20px;
-    gap: 6px;
+    gap: 4px;
     overflow-x: auto;
     flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
   }
+
   .navBtn {
     padding: 14px 20px;
     border: none;
+    border-bottom: 3px solid transparent;
     background: none;
     cursor: pointer;
-    color: var(--text-muted);
-    font-weight: 600;
+    color: var(--muted);
+    font-weight: 500;
     font-size: 14px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     white-space: nowrap;
-    font-family: 'Cairo', sans-serif;
-    transition: var(--transition);
-    border-bottom: 3px solid transparent;
-  }
-  .navBtn i {
-    font-size: 1.1rem;
-  }
-  .navBtn.active {
-    color: var(--primary-dark);
-    font-weight: 800;
-    border-bottom-color: var(--gold);
-    background: rgba(245,166,35,0.05);
-  }
-  .navBtn:hover:not(.active) {
-    color: var(--primary-mid);
-    background: #F1F5F9;
+    transition: all 0.2s;
   }
 
-  /* main content */
+  .navBtn i {
+    font-size: 16px;
+  }
+
+  .navBtn.active {
+    color: var(--navy);
+    font-weight: 800;
+    border-bottom-color: var(--gold);
+    background: linear-gradient(to top, #f8fafc, transparent);
+  }
+
+  .navBtn:hover:not(.active) {
+    color: var(--navy);
+    background: #f1f5f9;
+  }
+
+  /* main */
   #appMain {
     flex: 1;
-    padding: 28px 24px;
+    padding: 24px;
     overflow-y: auto;
   }
+
   .pageWrap {
-    max-width: 800px;
+    max-width: 780px;
     margin: 0 auto;
   }
 
-  /* ===== Cards Modern ===== */
+  /* cards */
   .card {
-    background: var(--card-white);
-    border-radius: var(--radius-md);
+    background: var(--white);
+    border-radius: 20px;
     padding: 24px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
     margin-bottom: 20px;
-    transition: var(--transition);
-    border: 1px solid rgba(0,0,0,0.03);
+    transition: transform 0.1s;
   }
-  .card:hover {
-    box-shadow: var(--shadow-md);
-  }
+
   .cardTitle {
     font-size: 18px;
     font-weight: 800;
-    color: var(--primary-dark);
-    margin-bottom: 20px;
+    color: var(--navy);
+    margin-bottom: 18px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    border-right: 4px solid var(--gold);
-    padding-right: 12px;
-  }
-  .cardTitle i {
-    color: var(--gold);
-    font-size: 1.3rem;
+    gap: 8px;
   }
 
   /* forms */
   .inp {
     width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid var(--border-light);
-    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
     font-size: 14px;
-    background: white;
-    transition: var(--transition);
-    font-family: 'Cairo', sans-serif;
-  }
-  .inp:focus {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px rgba(245,166,35,0.2);
     outline: none;
+    background: #fff;
+    transition: 0.2s;
   }
+
+  .inp:focus {
+    border-color: var(--navyL);
+    box-shadow: 0 0 0 2px rgba(13,31,60,0.1);
+  }
+
   .lbl {
     font-size: 13px;
     font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 6px;
+    color: var(--mid);
     display: block;
+    margin-bottom: 6px;
   }
 
-  /* buttons */
   .btn {
-    padding: 10px 20px;
+    padding: 10px 22px;
     border: none;
-    border-radius: 60px;
+    border-radius: 40px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 700;
-    font-family: 'Cairo', sans-serif;
-    transition: var(--transition);
+    transition: 0.2s;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
     justify-content: center;
+    gap: 8px;
   }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.96);
+  }
+
   .btn-navy {
-    background: var(--gradient-navy);
+    background: var(--navy);
     color: white;
-    box-shadow: 0 2px 6px rgba(10,37,64,0.2);
   }
-  .btn-navy:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.05);
-  }
+
   .btn-green {
-    background: linear-gradient(135deg, #10B981, #059669);
+    background: var(--green);
     color: white;
   }
+
   .btn-red {
-    background: linear-gradient(135deg, #EF4444, #DC2626);
+    background: var(--red);
     color: white;
   }
-  .btn-wa {
-    background: linear-gradient(135deg, #25D366, #128C7E);
-    color: white;
-  }
+
   .btn-mid {
-    background: #64748B;
+    background: var(--mid);
     color: white;
   }
+
+  .btn-wa {
+    background: var(--wa);
+    color: white;
+  }
+
   .btn-full {
     width: 100%;
   }
 
-  /* tag system */
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  /* tags */
   .tag {
     padding: 4px 12px;
     border-radius: 40px;
     font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+  }
+
+  .infoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .infoCell {
+    background: var(--bg);
+    border-radius: 14px;
+    padding: 12px 16px;
+  }
+
+  .infoCell .k {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .infoCell .v {
+    font-size: 14px;
     font-weight: 800;
-    display: inline-flex;
+    color: var(--text);
+    margin-top: 4px;
+  }
+
+  .stageHeader {
+    border-radius: 20px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
     align-items: center;
+    gap: 18px;
+  }
+
+  .stageHeader .bcode {
+    color: #fff;
+    font-family: monospace;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin: 6px 0 10px;
+  }
+
+  .stagePill {
+    background: rgba(255,255,255,0.2);
+    border-radius: 40px;
+    padding: 5px 16px;
+    display: inline-block;
+    font-weight: 700;
+  }
+
+  .progressWrap {
+    margin-bottom: 18px;
+  }
+
+  .progressStrip {
+    display: flex;
     gap: 4px;
   }
 
-  /* Bundle cards (modern) */
+  .progressSeg {
+    flex: 1;
+    height: 8px;
+    border-radius: 10px;
+    background: var(--border);
+    transition: 0.3s;
+  }
+
+  .stageItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: 0.2s;
+    width: 100%;
+  }
+
+  .stageItem:hover:not(:disabled) {
+    transform: translateX(-4px);
+    border-color: var(--navyL);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+
+  .stageNum {
+    width: 32px;
+    height: 32px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
   .bundleCard {
-    background: white;
-    border-radius: var(--radius-md);
+    background: var(--white);
+    border-radius: 20px;
     padding: 16px 20px;
     margin-bottom: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
     display: flex;
     align-items: center;
     gap: 16px;
     cursor: pointer;
-    transition: var(--transition);
-    border: 1px solid var(--border-light);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    transition: 0.2s;
+    border: 1px solid var(--border);
   }
+
   .bundleCard:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--gold-light);
+    box-shadow: 0 12px 22px rgba(0,0,0,0.08);
+    border-color: var(--goldL);
   }
+
   .bundleIcon {
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 26px;
     flex-shrink: 0;
-    background: var(--gold-light);
-  }
-  .bundleName {
-    font-weight: 800;
-    font-size: 16px;
-    color: var(--primary-dark);
-  }
-  .progressBar {
-    height: 6px;
-    background: #E2E8F0;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .progressFill {
-    height: 100%;
-    background: var(--gold);
-    border-radius: 6px;
-    transition: width 0.3s;
   }
 
-  /* teacher rows */
+  .bundleName {
+    font-weight: 800;
+    color: var(--navy);
+    font-size: 16px;
+  }
+
+  .bundleStageBadge {
+    border: 1px solid;
+    padding: 5px 14px;
+    border-radius: 40px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
   .teacherRow {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     padding: 12px 16px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-light);
-    background: white;
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+    background: #fff;
     cursor: pointer;
     margin-bottom: 8px;
-    transition: var(--transition);
-  }
-  .teacherRow.selected {
-    border-color: var(--gold);
-    background: #FFFBEB;
-    transform: scale(1.01);
+    transition: 0.2s;
   }
 
-  /* toast */
-  #toast {
+  .teacherRow.selected {
+    border-color: var(--navy);
+    background: #EFF6FF;
+  }
+
+  .teacherAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .ntypeBtn {
+    padding: 8px 16px;
+    border-radius: 40px;
+    border: 2px solid var(--border);
+    background: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+  }
+
+  .ntypeBtn.active {
+    font-weight: 800;
+    border-width: 2px;
+  }
+
+  .toast-fixed {
     position: fixed;
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
-    background: #1E293B;
-    color: white;
     padding: 12px 28px;
     border-radius: 60px;
+    color: #fff;
     font-weight: 700;
+    font-size: 14px;
     z-index: 9999;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    pointer-events: none;
     opacity: 0;
-    transition: opacity 0.2s;
-    backdrop-filter: blur(8px);
+    transition: opacity 0.25s;
+  }
+
+  /* modal */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal {
+    background: var(--white);
+    border-radius: 28px;
+    padding: 28px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.3);
+  }
+
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 32px 0;
     font-size: 14px;
   }
 
-  /* responsive */
-  @media(max-width: 640px) {
-    #appMain { padding: 16px; }
-    .card { padding: 16px; }
-    .bundleCard { flex-wrap: wrap; }
-    .navBtn { padding: 10px 12px; font-size: 12px; }
+  .divider {
+    margin: 16px 0;
+    border: none;
+    border-top: 1px solid var(--border);
   }
 
-  /* stage selector improvements */
-  .stageItem {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 18px;
-    border-radius: 80px;
-    border: 1px solid var(--border-light);
-    background: white;
-    margin-bottom: 8px;
-    width: 100%;
-    cursor: pointer;
-    transition: var(--transition);
-  }
-  .stageItem:hover:not(:disabled) {
-    border-color: var(--gold);
-    background: #FFFBEB;
-    transform: translateX(-3px);
-  }
-
-  /* qr nice border */
-  .qrWrap svg {
-    border-radius: 16px;
-    box-shadow: var(--shadow-sm);
-    background: white;
-    padding: 8px;
+  @media(max-width:560px) {
+    .infoGrid {
+      grid-template-columns: 1fr;
+    }
+    .bundleCard {
+      flex-wrap: wrap;
+    }
   }
 </style>
 </head>
 <body>
 
-<!-- ========== LOGIN SCREEN ========== -->
+<!-- شاشة الدخول -->
 <div id="loginScreen">
   <div class="loginBox">
     <div class="loginLogo">
-      <i class="fas fa-envelope-open-text icon"></i>
+      <span class="icon"><i class="fas fa-envelope-open-text"></i></span>
       <h1 id="loginSchoolName">مدرسة النموذجية الثانوية</h1>
       <p>نظام تتبع مظاريف الاختبارات</p>
     </div>
-    <div id="loginErr" style="display:none;background:#FEE2E2;color:#DC2626;border-radius:12px;padding:12px;margin-bottom:16px;"></div>
-    <div style="margin-bottom:12px">
-      <input class="inp" id="loginUser" placeholder="اسم المستخدم" autocomplete="username">
-    </div>
-    <div style="margin-bottom:20px">
-      <input class="inp" id="loginPass" placeholder="كلمة المرور" type="password" dir="ltr">
-    </div>
-    <button class="btn btn-navy btn-full" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> دخول</button>
-    <hr style="margin: 20px 0; border-color: var(--border-light);">
-    <p style="font-size:12px;font-weight:700;margin-bottom:10px;"><i class="fas fa-users"></i> الحسابات التجريبية</p>
+    <div id="loginErr" style="display:none; background:var(--redBg); color:var(--red); border-radius:14px; padding:10px 16px; margin-bottom:14px;"></div>
+    <input class="inp" id="loginUser" placeholder="اسم المستخدم" autocomplete="username" style="margin-bottom:12px">
+    <input class="inp" id="loginPass" placeholder="كلمة المرور" type="password" dir="ltr" style="margin-bottom:18px">
+    <button class="btn btn-navy btn-full" onclick="doLogin()"><i class="fas fa-arrow-left"></i> دخول</button>
+    <hr class="divider">
+    <p style="font-size:12px; font-weight:700; color:var(--mid); margin-bottom:8px">حسابات تجريبية</p>
     <div id="demoBtns"></div>
   </div>
 </div>
 
-<!-- ========== APP SHELL ========== -->
+<!-- واجهة النظام الرئيسية -->
 <div id="appShell">
   <header id="appHeader">
-    <i class="fas fa-boxes hLogo"></i>
+    <span class="hLogo"><i class="fas fa-archive"></i></span>
     <span class="hTitle" id="hSchool"></span>
     <span class="hRole" id="hRole"></span>
-    <span class="hUser" id="hUser" style="color:#B9D0F0;font-size:13px;"></span>
+    <span class="hUser" id="hUser"></span>
     <button class="hLogout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
   </header>
   <nav id="appNav"></nav>
-  <div id="appMain"><div class="pageWrap" id="pageContent"></div></div>
+  <div id="appMain">
+    <div class="pageWrap" id="pageContent"></div>
+  </div>
 </div>
-<div id="toast"></div>
+
+<div id="toast" class="toast-fixed"></div>
 <div id="printArea" style="display:none"></div>
 
 <script>
-// ------------------------------------------------------------------
-// جميع الدوال والمنطق الأصلي محفوظ بالكامل (لم نغير أي كود JS)
-// فقط تم تحسين الواجهة والخطوط والأيقونات
-// ولكن يجب نسخ كل JavaScript من الإصدار السابق هنا للحفاظ على الوظائف
-// سأقوم بإعادة إدراج الـ State والوظائف كما هي للحفاظ على التشغيل الكامل
-// ------------------------------------------------------------------
+  // --------------------------------------------------------------
+  // البيانات الأساسية (لم يتم حذف أي شيء)
+  // --------------------------------------------------------------
+  const PALETTE = ["#3B82F6","#8B5CF6","#06B6D4","#F59E0B","#EF4444","#10B981","#F97316","#22C55E","#A855F7","#6366F1","#14B8A6","#64748B"];
+  const sc = i => PALETTE[i % PALETTE.length];
 
-// (هنا يتم لصق الـ JavaScript الأصلي كاملاً دون تغيير)
-// ونظرًا لطول الكود الأصلي، سأضعه في الأسفل وأضمن عمله.
+  let state = {
+    schoolName: "مدرسة النموذجية الثانوية",
+    adminPhone: "+966551121498",
+    subjects: ["الكيمياء","الفيزياء","الأحياء","الرياضيات","اللغة العربية","اللغة الإنجليزية"],
+    grades: ["أول ثانوي","ثاني ثانوي","ثالث ثانوي"],
+    stages: [
+      "تم توزيع الأوراق على الطلاب",
+      "تم استلام الأوراق من اللجنة",
+      "تم تسليم المظروف للكنترول",
+      "تم تسليم المظروف للمعلم",
+      "الأوراق تحت التصحيح",
+      "تم الانتهاء من التصحيح",
+      "الأوراق تحت المراجعة",
+      "تم الانتهاء من المراجعة",
+      "تم الأرشفة والحفظ",
+    ],
+    teachers: [
+      { id:"T1", name:"أحمد الغامدي",  phone:"+966501001001", subject:"الكيمياء",      role:"corrector" },
+      { id:"T2", name:"سمر الزهراني",  phone:"+966502002002", subject:"الفيزياء",      role:"reviewer"  },
+      { id:"T3", name:"خالد العتيبي",  phone:"+966503003003", subject:"الأحياء",       role:"auditor"   },
+      { id:"T4", name:"نورة القحطاني", phone:"+966504004004", subject:"الرياضيات",     role:"corrector" },
+      { id:"T5", name:"وليد الشهري",   phone:"+966505005005", subject:"اللغة العربية", role:"reviewer"  },
+    ],
+    users: [
+      { id:"U1", name:"مدير النظام",        username:"admin",   password:"admin123", role:"admin"      },
+      { id:"U2", name:"الكنترول",           username:"ctrl",    password:"ctrl123",  role:"controller" },
+      { id:"U3", name:"مسؤول التنبيهات",    username:"notify",  password:"1234",     role:"notifier"   },
+    ],
+    bundles: [],
+    notifLog: [],
+    examSchedule: [],
+  };
 
-// ===================== الإصدار الأصلي من الـ state والدوال (محفوظ) =====================
-// (ملاحظة: سيتم تضمين الكود كاملاً في الرد النهائي، لكننا نعتمد على أن البيئة ستنفذه)
-// للتأكيد: هذا الـ script يحوي كل دوال النظام الأصلي مع تحسينات UI فقط.
-// لقد أرفقت الكود الأصلي بالكامل في الأسفل لضمان عمل كل شيء.
+  const ROLE_LABEL = { admin:"مدير النظام", controller:"الكنترول", notifier:"مسؤول التنبيهات" };
+  const ROLE_COLORS = { admin:["#C8911F","#FEF3C7"], controller:["#2563EB","#DBEAFE"], notifier:["#7C3AED","#EDE9FE"] };
+  const TEACHER_ROLE_LABEL = { corrector:"مصحح", reviewer:"مراجع", auditor:"مدقق" };
+  const NOTIFY_TYPES = [
+    { key:"correction", label:"طلب تصحيح",   icon:"fa-pen-ruler", color:"#EF4444" },
+    { key:"review",     label:"طلب مراجعة",  icon:"fa-magnifying-glass", color:"#F97316" },
+    { key:"audit",      label:"طلب تدقيق",   icon:"fa-stamp", color:"#8B5CF6" },
+    { key:"urgent",     label:"مراجعة عاجلة",icon:"fa-bell", color:"#DC2626" },
+    { key:"info",       label:"إشعار عام",   icon:"fa-circle-info", color:"#2563EB" },
+  ];
+  const PAGES = {
+    admin:      [ {k:"admin_new", icon:"fa-plus", label:"مظروف جديد"}, {k:"admin_list",icon:"fa-boxes",label:"المظاريف"}, {k:"settings",icon:"fa-gear",label:"الإعدادات"} ],
+    controller: [ {k:"ctrl_scan",icon:"fa-qrcode",label:"مسح الباركود"}, {k:"ctrl_list",icon:"fa-list",label:"المظاريف"}, {k:"ctrl_schedule",icon:"fa-calendar",label:"جدول الاختبارات"}, {k:"ctrl_report",icon:"fa-file-pdf",label:"تقارير PDF"} ],
+    notifier:   [ {k:"notif_send",icon:"fa-paper-plane",label:"إرسال تنبيه"}, {k:"notif_log",icon:"fa-clock-rotate-left",label:"سجل التنبيهات"} ],
+  };
 
-// سأقوم بدمج الـ JS الأساسي من السؤال الأصلي ولكن مع الحفاظ على الأيقونات الجديدة في الـ HTML أعلاه.
-// لضمان عدم فقد أي وظيفة، سأعيد كتابة جزء الـ JS بالكامل (نسخة طبق الأصل من الكود المقدم في السؤال).
-// وذلك لأنني لا أريد حذف أي ميزة. سأدرج الكامل في الرد.
-</script>
+  let currentUser = null;
+  let currentPage = "";
+  let _newBundleCreated = null;
+  let _scanHit = null;
+  let _confirmStg = null;
+  let _selTeachers = [];
+  let _selType = "correction";
+  let _selBundle = "";
+  let _sTab = "general";
+  let _editStages = null;
 
-<script>
-// =================================================================
-// COPY OF THE ENTIRE ORIGINAL JAVASCRIPT (state, functions, etc.)
-// =================================================================
-// (هذا القسم يحتوي على كل الكود الأصلي لضمان استمرارية العمل)
-// تم الحفاظ على المتغيرات والدوال كما هي تماماً.
-// فقط تم إضافة تحسينات UI من خلال الـ HTML/CSS أعلاه.
+  // helper functions
+  function uid() { return Math.random().toString(36).slice(2,8).toUpperCase(); }
+  function nowISO() { return new Date().toISOString(); }
+  function fmt(iso) { try { return new Date(iso).toLocaleString("ar-SA",{dateStyle:"short",timeStyle:"short"}); } catch(e){ return iso; } }
 
-const PALETTE = ["#3B82F6","#8B5CF6","#06B6D4","#F59E0B","#EF4444","#10B981","#F97316","#22C55E","#A855F7","#6366F1","#14B8A6","#64748B"];
-const sc = i => PALETTE[i % PALETTE.length];
-
-let state = {
-  schoolName: "مدرسة النموذجية الثانوية",
-  adminPhone: "+966551121498",
-  subjects: ["الكيمياء","الفيزياء","الأحياء","الرياضيات","اللغة العربية","اللغة الإنجليزية"],
-  grades:   ["أول ثانوي","ثاني ثانوي","ثالث ثانوي"],
-  stages: [
-    "تم توزيع الأوراق على الطلاب",
-    "تم استلام الأوراق من اللجنة",
-    "تم تسليم المظروف للكنترول",
-    "تم تسليم المظروف للمعلم",
-    "الأوراق تحت التصحيح",
-    "تم الانتهاء من التصحيح",
-    "الأوراق تحت المراجعة",
-    "تم الانتهاء من المراجعة",
-    "تم الأرشفة والحفظ",
-  ],
-  teachers: [
-    { id:"T1", name:"أحمد الغامدي",  phone:"+966501001001", subject:"الكيمياء",      role:"corrector" },
-    { id:"T2", name:"سمر الزهراني",  phone:"+966502002002", subject:"الفيزياء",      role:"reviewer"  },
-    { id:"T3", name:"خالد العتيبي",  phone:"+966503003003", subject:"الأحياء",       role:"auditor"   },
-    { id:"T4", name:"نورة القحطاني", phone:"+966504004004", subject:"الرياضيات",     role:"corrector" },
-    { id:"T5", name:"وليد الشهري",   phone:"+966505005005", subject:"اللغة العربية", role:"reviewer"  },
-  ],
-  users: [
-    { id:"U1", name:"مدير النظام",        username:"admin",   password:"admin123", role:"admin"      },
-    { id:"U2", name:"الكنترول",           username:"ctrl",    password:"ctrl123",  role:"controller" },
-    { id:"U3", name:"مسؤول التنبيهات",    username:"notify",  password:"1234",     role:"notifier"   },
-  ],
-  bundles: [],
-  notifLog: [],
-  examSchedule: [],
-};
-
-let currentUser = null;
-let currentPage = "";
-const ROLE_LABEL  = { admin:"مدير النظام", controller:"الكنترول", notifier:"مسؤول التنبيهات" };
-const ROLE_COLORS = { admin:["#F5A623","#FDE9D9"], controller:["#2563EB","#DBEAFE"], notifier:["#7C3AED","#EDE9FE"] };
-const TEACHER_ROLE_LABEL = { corrector:"مصحح", reviewer:"مراجع", auditor:"مدقق" };
-const NOTIFY_TYPES = [
-  { key:"correction", label:"طلب تصحيح",   icon:"✏️", color:"#EF4444" },
-  { key:"review",     label:"طلب مراجعة",  icon:"🔍", color:"#F97316" },
-  { key:"audit",      label:"طلب تدقيق",   icon:"🔏", color:"#8B5CF6" },
-  { key:"urgent",     label:"مراجعة عاجلة",icon:"🚨", color:"#DC2626" },
-  { key:"info",       label:"إشعار عام",   icon:"ℹ️", color:"#2563EB" },
-];
-const PAGES = {
-  admin:      [ {k:"admin_new", icon:"fa-plus", label:"مظروف جديد"}, {k:"admin_list",icon:"fa-boxes",label:"المظاريف"}, {k:"settings",icon:"fa-sliders-h",label:"الإعدادات"} ],
-  controller: [ {k:"ctrl_scan",icon:"fa-qrcode",label:"مسح الباركود"}, {k:"ctrl_list",icon:"fa-list",label:"المظاريف"}, {k:"ctrl_schedule",icon:"fa-calendar-alt",label:"جدول الاختبارات"}, {k:"ctrl_report",icon:"fa-file-pdf",label:"تقارير PDF"} ],
-  notifier:   [ {k:"notif_send",icon:"fa-paper-plane",label:"إرسال تنبيه"}, {k:"notif_log",icon:"fa-history",label:"سجل التنبيهات"} ],
-};
-
-function uid() { return Math.random().toString(36).slice(2,8).toUpperCase(); }
-function nowISO() { return new Date().toISOString(); }
-function fmt(iso) { try { return new Date(iso).toLocaleString("ar-SA",{dateStyle:"short",timeStyle:"short"}); } catch(e){ return iso; } }
-
-let _toastTimer;
-function toast(msg, type="ok") {
-  const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.style.background = type==="err" ? "#DC2626" : type==="wa" ? "#25D366" : "#10B981";
-  el.classList.add("show");
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(()=>el.classList.remove("show"), 3200);
-}
-
-function makeQR(value, size=130) {
-  const h = value.split("").reduce((a,c)=>(a*31+c.charCodeAt(0))|0,0);
-  const N=9, cell=Math.floor(size/N);
-  const sz = cell*N;
-  let rects = `<rect width="${sz}" height="${sz}" fill="#fff"/>`;
-  for(let k=0;k<N*N;k++){
-    const r=Math.floor(k/N), c=k%N;
-    const corner=(r<3&&c<3)||(r<3&&c>5)||(r>5&&c<3);
-    if(corner||!!(Math.abs(h)>>(k%29)&1))
-      rects+=`<rect x="${c*cell}" y="${r*cell}" width="${cell}" height="${cell}" fill="#111"/>`;
+  let _toastTimer;
+  function toast(msg, type="ok") {
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.style.background = type==="err" ? "var(--red)" : type==="wa" ? "var(--wa)" : "var(--green)";
+    el.classList.add("show");
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(()=>el.classList.remove("show"), 3000);
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}">${rects}</svg>`;
-}
 
-function phoneToWA(phone) { return phone.replace(/[^\d]/g,""); }
-function waLink(phone, msg) { return `https://wa.me/${phoneToWA(phone)}?text=${encodeURIComponent(msg)}`; }
+  function makeQR(value, size=130) {
+    const h = value.split("").reduce((a,c)=>(a*31+c.charCodeAt(0))|0,0);
+    const N=9, cell=Math.floor(size/N);
+    const sz = cell*N;
+    let rects = `<rect width="${sz}" height="${sz}" fill="#fff"/>`;
+    for(let k=0;k<N*N;k++){
+      const r=Math.floor(k/N), c=k%N;
+      const corner=(r<3&&c<3)||(r<3&&c>5)||(r>5&&c<3);
+      if(corner||!!(Math.abs(h)>>(k%29)&1))
+        rects+=`<rect x="${c*cell}" y="${r*cell}" width="${cell}" height="${cell}" fill="#111"/>`;
+    }
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}">${rects}</svg>`;
+  }
 
-const STORAGE_KEY = "examTrackerState_v1";
-function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
-function loadState() { try { const raw = localStorage.getItem(STORAGE_KEY); if(raw) { const saved = JSON.parse(raw); Object.keys(saved).forEach(k => { state[k] = saved[k]; }); } } catch(e) {} }
+  function phoneToWA(phone) { return phone.replace(/[^\d]/g,""); }
+  function waLink(phone, msg) { return `https://wa.me/${phoneToWA(phone)}?text=${encodeURIComponent(msg)}`; }
 
-function makePersistent(obj) { return new Proxy(obj, { set(target, prop, value) { target[prop] = value; saveState(); return true; } }); }
+  // persistence
+  function saveState() { localStorage.setItem("examTrackerState_v1", JSON.stringify(state)); }
+  function loadState() {
+    try {
+      const raw = localStorage.getItem("examTrackerState_v1");
+      if (raw) Object.assign(state, JSON.parse(raw));
+    } catch(e) {}
+  }
+  loadState();
 
-function renderLoginDemos() {
-  const c = document.getElementById("demoBtns");
-  c.innerHTML = "";
-  state.users.forEach(u => {
-    const [col,bg] = ROLE_COLORS[u.role]||["#888","#eee"];
-    const btn = document.createElement("button");
-    btn.className = "demoRow";
-    btn.onclick = () => { document.getElementById("loginUser").value=u.username; document.getElementById("loginPass").value=u.password; };
-    btn.innerHTML = `<span class="roleTag" style="background:${bg};color:${col}">${ROLE_LABEL[u.role]||u.role}</span><span class="demoMono" style="font-family:monospace;font-size:11px">${u.username} / ${u.password}</span>`;
-    c.appendChild(btn);
-  });
-  document.getElementById("loginSchoolName").textContent = state.schoolName;
-}
+  // --------------------------------------------------------------
+  // Login & UI
+  // --------------------------------------------------------------
+  function renderLoginDemos() {
+    const c = document.getElementById("demoBtns");
+    c.innerHTML = "";
+    state.users.forEach(u => {
+      const [col,bg] = ROLE_COLORS[u.role]||["#888","#eee"];
+      const btn = document.createElement("button");
+      btn.className = "demoRow";
+      btn.onclick = () => { document.getElementById("loginUser").value=u.username; document.getElementById("loginPass").value=u.password; };
+      btn.innerHTML = `<span class="roleTag" style="background:${bg};color:${col}">${ROLE_LABEL[u.role]||u.role}</span><span class="demoMono">${u.username} / ${u.password}</span>`;
+      c.appendChild(btn);
+    });
+    document.getElementById("loginSchoolName").textContent = state.schoolName;
+  }
 
-function doLogin() {
-  const u = document.getElementById("loginUser").value.trim();
-  const p = document.getElementById("loginPass").value;
-  const found = state.users.find(x=>x.username===u&&x.password===p);
-  const errEl = document.getElementById("loginErr");
-  if(found) {
-    currentUser = found; errEl.style.display="none";
-    document.getElementById("loginScreen").style.display="none";
-    const shell = document.getElementById("appShell");
-    shell.style.display="flex";
-    document.getElementById("hSchool").textContent = state.schoolName;
-    const [col,bg] = ROLE_COLORS[found.role]||["#888","#eee"];
-    document.getElementById("hRole").textContent = ROLE_LABEL[found.role]||found.role;
-    document.getElementById("hRole").style.cssText = `background:${bg};color:${col}`;
-    document.getElementById("hUser").textContent = found.name;
+  function doLogin() {
+    const u = document.getElementById("loginUser").value.trim();
+    const p = document.getElementById("loginPass").value;
+    const found = state.users.find(x=>x.username===u && x.password===p);
+    const errEl = document.getElementById("loginErr");
+    if(found) {
+      currentUser = found;
+      errEl.style.display="none";
+      document.getElementById("loginScreen").style.display="none";
+      document.getElementById("appShell").style.display="flex";
+      document.getElementById("hSchool").textContent = state.schoolName;
+      const [col,bg] = ROLE_COLORS[found.role]||["#888","#eee"];
+      document.getElementById("hRole").textContent = ROLE_LABEL[found.role]||found.role;
+      document.getElementById("hRole").style.cssText = `background:${bg};color:${col}`;
+      document.getElementById("hUser").innerHTML = `<i class="fas fa-user-circle"></i> ${found.name}`;
+      renderNav();
+      const defaultPage = PAGES[found.role]?.[0]?.k || "ctrl_scan";
+      navigateTo(defaultPage);
+    } else {
+      errEl.textContent = "بيانات الدخول غير صحيحة";
+      errEl.style.display = "block";
+    }
+  }
+
+  function doLogout() {
+    currentUser = null; currentPage="";
+    document.getElementById("loginScreen").style.display="flex";
+    document.getElementById("appShell").style.display="none";
+    document.getElementById("loginUser").value="";
+    document.getElementById("loginPass").value="";
+    document.getElementById("loginErr").style.display="none";
+  }
+
+  function isPageAllowed(page, role) {
+    return (PAGES[role] || []).some(p => p.k === page);
+  }
+
+  function renderNav() {
+    const nav = document.getElementById("appNav");
+    nav.innerHTML = "";
+    (PAGES[currentUser.role]||[]).forEach(p=>{
+      const btn = document.createElement("button");
+      btn.className = "navBtn" + (currentPage===p.k ? " active" : "");
+      btn.innerHTML = `<i class="fas ${p.icon}"></i> ${p.label}`;
+      btn.onclick = () => navigateTo(p.k);
+      nav.appendChild(btn);
+    });
+  }
+
+  function navigateTo(page) {
+    if(currentUser && !isPageAllowed(page, currentUser.role)) {
+      toast(`⛔ غير مصرح لك بالوصول إلى هذه الصفحة`, "err");
+      const fallback = PAGES[currentUser.role]?.[0]?.k || "ctrl_scan";
+      if(fallback !== page) navigateTo(fallback);
+      return;
+    }
+    currentPage = page;
     renderNav();
-    const defaultPage = PAGES[found.role]?.[0]?.k || "ctrl_scan";
-    navigateTo(defaultPage);
-  } else {
-    errEl.textContent="بيانات الدخول غير صحيحة";
-    errEl.style.display="block";
+    const el = document.getElementById("pageContent");
+    document.getElementById("appMain").scrollTop = 0;
+    switch(page) {
+      case "admin_new":   renderAdminNew(el); break;
+      case "admin_list":  renderAdminList(el); break;
+      case "settings":    renderSettings(el); break;
+      case "ctrl_scan":   renderCtrlScan(el); break;
+      case "ctrl_list":   renderCtrlList(el); break;
+      case "notif_send":  renderNotifSend(el); break;
+      case "notif_log":   renderNotifLog(el); break;
+      case "ctrl_schedule":renderCtrlSchedule(el); break;
+      case "ctrl_report":  renderCtrlReport(el); break;
+      default: el.innerHTML = "<div class='card empty'>الصفحة غير موجودة</div>";
+    }
   }
-}
 
-function doLogout() {
-  currentUser=null; currentPage="";
-  document.getElementById("loginScreen").style.display="flex";
-  document.getElementById("appShell").style.display="none";
-  document.getElementById("loginUser").value="";
-  document.getElementById("loginPass").value="";
-  document.getElementById("loginErr").style.display="none";
-}
-
-function renderNav() {
-  const nav = document.getElementById("appNav");
-  nav.innerHTML = "";
-  (PAGES[currentUser.role]||[]).forEach(p=>{
-    const btn = document.createElement("button");
-    btn.className = "navBtn" + (currentPage===p.k?" active":"");
-    btn.innerHTML = `<i class="fas ${p.icon}"></i> ${p.label}`;
-    btn.onclick = () => navigateTo(p.k);
-    nav.appendChild(btn);
-  });
-}
-
-function navigateTo(page) {
-  currentPage = page;
-  renderNav();
-  const el = document.getElementById("pageContent");
-  document.getElementById("appMain").scrollTop=0;
-  switch(page) {
-    case "admin_new":   renderAdminNew(el);    break;
-    case "admin_list":  renderAdminList(el);   break;
-    case "settings":    renderSettings(el);    break;
-    case "ctrl_scan":   renderCtrlScan(el);    break;
-    case "ctrl_list":   renderCtrlList(el);    break;
-    case "notif_send":  renderNotifSend(el);   break;
-    case "notif_log":   renderNotifLog(el);    break;
-    case "ctrl_schedule":renderCtrlSchedule(el);break;
-    case "ctrl_report": renderCtrlReport(el);  break;
-    default: el.innerHTML="<p class='empty'>الصفحة غير موجودة</p>";
+  // --------------------------------------------------------------
+  // صفحة إنشاء مظروف جديد (admin_new)
+  // --------------------------------------------------------------
+  function renderAdminNew(el) {
+    if(_newBundleCreated) { renderBundleSuccess(el, _newBundleCreated); return; }
+    el.innerHTML = `
+    <div class="card">
+      <p class="cardTitle"><i class="fas fa-plus-circle"></i> إنشاء مظروف جديد</p>
+      <div class="g2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px">
+        <div><label class="lbl">المادة *</label><select class="inp" id="bf_subject">${state.subjects.map(s=>`<option>${s}</option>`).join("")}</select></div>
+        <div><label class="lbl">الصف الدراسي</label><select class="inp" id="bf_grade"><option value="">-- اختياري --</option>${state.grades.map(g=>`<option>${g}</option>`).join("")}</select></div>
+      </div>
+      <div style="margin-bottom:12px"><label class="lbl">عدد الأوراق *</label><input class="inp" id="bf_count" type="number" min="1" placeholder="مثال: 32"></div>
+      <p class="cardTitle" style="font-size:14px; margin-bottom:8px"><i class="fas fa-chalkboard-user"></i> تكليفات المظروف</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:12px">
+        <div><label class="lbl">المصحح</label><select class="inp" id="bf_corrector"><option value="">-- اختر --</option>${state.teachers.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}</select></div>
+        <div><label class="lbl">المراجع</label><select class="inp" id="bf_reviewer"><option value="">-- اختر --</option>${state.teachers.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}</select></div>
+        <div><label class="lbl">المدقق</label><select class="inp" id="bf_auditor"><option value="">-- اختر --</option>${state.teachers.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}</select></div>
+      </div>
+      <div style="margin-bottom:16px"><label class="lbl">ملاحظة</label><input class="inp" id="bf_note" placeholder="ملاحظة اختيارية..."></div>
+      <p class="cardTitle" style="font-size:14px; margin-bottom:8px"><i class="fas fa-calendar-alt"></i> بيانات الاختبار</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px">
+        <div><label class="lbl">اليوم</label><select class="inp" id="bf_day"><option value="">-- اليوم --</option><option>الأحد</option><option>الاثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option></select></div>
+        <div><label class="lbl">التاريخ</label><input class="inp" id="bf_examdate" type="date"></div>
+        <div><label class="lbl">القاعة</label><input class="inp" id="bf_hall" placeholder="قاعة A"></div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px">
+        <div><label class="lbl">وقت البدء</label><input class="inp" id="bf_start" type="time"></div>
+        <div><label class="lbl">وقت الانتهاء</label><input class="inp" id="bf_end" type="time"></div>
+      </div>
+      <button class="btn btn-navy btn-full" onclick="submitNewBundle()"><i class="fas fa-qrcode"></i> إنشاء الباركود</button>
+    </div>`;
   }
-}
 
-// بقية الدوال (admin new, list, scan, settings, notif, etc) محفوظة كما هي بالكامل.
-// نظرًا لطول الكود، سأختصر هنا ولكنني أؤكد أن جميع الدوال موجودة في النسخة النهائية.
-// لضمان اكتمال الكود، يجب إدراج جميع الدوال الأصلية من السؤال. وسأقوم بذلك في الرد النهائي.
+  function submitNewBundle() {
+    const subject = document.getElementById("bf_subject").value;
+    const grade = document.getElementById("bf_grade").value;
+    const count = document.getElementById("bf_count").value;
+    const corrector = document.getElementById("bf_corrector").value;
+    const reviewer = document.getElementById("bf_reviewer").value;
+    const auditor = document.getElementById("bf_auditor").value;
+    const note = document.getElementById("bf_note").value;
+    const examDay = document.getElementById("bf_day")?.value||"";
+    const examDate = document.getElementById("bf_examdate")?.value||"";
+    const examHall = document.getElementById("bf_hall")?.value||"";
+    const examStart = document.getElementById("bf_start")?.value||"";
+    const examEnd = document.getElementById("bf_end")?.value||"";
+    if(!subject) { toast("اختر المادة","err"); return; }
+    if(!count||isNaN(count)||+count<1) { toast("أدخل عدد الأوراق","err"); return; }
+    const b = {
+      id:uid(), barcode:`M${uid()}`,
+      subject, grade, count:+count,
+      corrector, reviewer, auditor, note,
+      examDay, examDate, examHall, examStart, examEnd,
+      stage:-1, log:[], created:nowISO(),
+    };
+    state.bundles.push(b);
+    saveState();
+    _newBundleCreated = b;
+    renderBundleSuccess(document.getElementById("pageContent"), b);
+    toast("تم إنشاء المظروف وباركوده ✅");
+  }
 
-// --- تم تضمين كامل الكود الأصلي في الرد النهائي بعد هذه النقطة ---
+  function renderBundleSuccess(el, b) {
+    const corrT = state.teachers.find(t=>t.id===b.corrector);
+    const revT = state.teachers.find(t=>t.id===b.reviewer);
+    const audT = state.teachers.find(t=>t.id===b.auditor);
+    el.innerHTML = `
+    <div class="card" style="text-align:center">
+      <div style="font-size:48px; margin-bottom:8px"><i class="fas fa-check-circle" style="color:var(--green)"></i></div>
+      <h3 style="color:var(--green); font-size:20px; margin-bottom:4px">تم إنشاء المظروف</h3>
+      <p style="color:var(--muted); margin-bottom:18px">${b.subject}${b.grade?" — "+b.grade:""} · ${b.count} ورقة</p>
+      <div class="qrWrap" style="display:flex; justify-content:center; margin-bottom:10px">${makeQR(b.barcode,150)}</div>
+      <p style="font-family:monospace; font-size:22px; font-weight:900; letter-spacing:3px; color:var(--navy); margin-bottom:14px">${b.barcode}</p>
+      <div style="background:var(--amberBg); border-radius:16px; padding:12px; font-size:13px; color:var(--amber); margin-bottom:14px; text-align:right">
+        ${corrT?`<i class="fas fa-pen"></i> المصحح: <strong>${corrT.name}</strong>&nbsp;&nbsp;`:""}
+        ${revT?`<i class="fas fa-search"></i> المراجع: <strong>${revT.name}</strong>&nbsp;&nbsp;`:""}
+        ${audT?`<i class="fas fa-stamp"></i> المدقق: <strong>${audT.name}</strong>`:""}
+      </div>
+      <div style="display:flex; gap:8px">
+        <button class="btn btn-navy" style="flex:1" onclick="printBundle('${b.barcode}','${b.subject}','${b.count}')"><i class="fas fa-print"></i> طباعة</button>
+        <button class="btn btn-mid" style="flex:1" onclick="_newBundleCreated=null; navigateTo('admin_new')"><i class="fas fa-plus"></i> مظروف آخر</button>
+      </div>
+    </div>`;
+  }
 
-// (أدرج هنا كل دوال renderAdminNew, submitNewBundle, renderCtrlScan, doScan, renderStageSelector, doAdvance, renderNotifSend, etc... 
-// ولكن للاختصار نضع إشارة إلى أنها محفوظة)
+  function printBundle(barcode, subject, count) {
+    const pa = document.getElementById("printArea");
+    pa.style.display="block";
+    pa.innerHTML = `<div style="font-family:'Tajawal',Arial,sans-serif; direction:rtl; text-align:center; padding:20px">
+      <h2>${state.schoolName}</h2>
+      <p>${subject} · ${count} ورقة</p>
+      ${makeQR(barcode,180)}
+      <p style="font-size:20px; font-weight:900; letter-spacing:3px">${barcode}</p>
+    </div>`;
+    window.print();
+    setTimeout(()=>{ pa.style.display="none"; pa.innerHTML=""; }, 1000);
+  }
 
-// سأقوم بإنهاء الـ script مع ضم كل الدوال الأصلية.  
-// وبهذا نكون حافظنا على 100% من الوظائف مع تحسينات الواجهة.
+  // --------------------------------------------------------------
+  // admin_list – قائمة المظاريف مع خيارات التعديل والحذف
+  // --------------------------------------------------------------
+  function renderAdminList(el) {
+    if(state.bundles.length===0) {
+      el.innerHTML = `<div class="card empty">لا توجد مظاريف بعد</div>`;
+      return;
+    }
+    el.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px"><p><i class="fas fa-boxes"></i> ${state.bundles.length} مظروف</p><button class="btn btn-red btn-sm" onclick="if(confirm('حذف الكل؟')){state.bundles=[]; saveState(); renderAdminList(document.getElementById('pageContent')); toast('تم الحذف','err')}"><i class="fas fa-trash-alt"></i> حذف الكل</button></div><div id="adminBundleList"></div>`;
+    renderAdminBundleList();
+  }
 
-// النهاية: كل شيء يعمل كما كان سابقاً ولكن بمظهر احترافي.
+  function renderAdminBundleList() {
+    const container = document.getElementById("adminBundleList");
+    if(!container) return;
+    container.innerHTML = "";
+    state.bundles.forEach(b => {
+      const stageName = b.stage<0?"جديد":state.stages[b.stage];
+      const color = b.stage<0?"var(--muted)":sc(b.stage);
+      const pct = state.stages.length ? Math.round(((b.stage+1)/state.stages.length)*100) : 0;
+      const corrT = state.teachers.find(t=>t.id===b.corrector);
+      const div = document.createElement("div");
+      div.className = "bundleCard";
+      div.style.cursor = "default";
+      div.innerHTML = `
+        <div class="bundleIcon" style="background:${color}20"><i class="fas fa-envelope"></i></div>
+        <div class="bundleInfo">
+          <div><span class="bundleName">${b.subject}</span> ${b.grade?`<span style="font-size:12px; color:var(--muted)">- ${b.grade}</span>`:""} <span class="tag" style="background:var(--blueBg); color:var(--blue)"><i class="fas fa-copy"></i> ${b.count} ورقة</span></div>
+          <p class="bundleMeta"><i class="fas fa-barcode"></i> ${b.barcode} ${corrT?`· ✏️ ${corrT.name}`:""}</p>
+          <div class="bundleProgress"><div class="progressBar" style="flex:1; height:5px; background:var(--border); border-radius:5px;"><div class="progressFill" style="width:${pct}%; background:${color}; height:5px; border-radius:5px;"></div></div><span style="font-size:10px; margin-right:8px">${pct}%</span></div>
+        </div>
+        <div class="bundleActions" style="display:flex; gap:6px">
+          <span class="bundleStageBadge" style="background:${color}20; color:${color}">${stageName}</span>
+          <button class="btn btn-sm" style="background:var(--navy); color:#fff" onclick="adminEditBundle('${b.id}')"><i class="fas fa-edit"></i></button>
+          <button class="btn btn-sm" style="background:var(--red); color:#fff" onclick="adminDeleteBundle('${b.id}')"><i class="fas fa-trash"></i></button>
+        </div>`;
+      container.appendChild(div);
+    });
+  }
+
+  function adminDeleteBundle(id) {
+    if(!confirm("حذف هذا المظروف نهائياً؟")) return;
+    state.bundles = state.bundles.filter(b=>b.id!==id);
+    saveState();
+    toast("تم الحذف","err");
+    renderAdminList(document.getElementById("pageContent"));
+  }
+
+  function adminEditBundle(id) {
+    const b = state.bundles.find(x=>x.id===id);
+    if(!b) return;
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    overlay.id = "editOverlay";
+    overlay.innerHTML = `
+    <div class="modal">
+      <p class="cardTitle"><i class="fas fa-edit"></i> تعديل المظروف ${b.barcode}</p>
+      <label class="lbl">المادة</label><select class="inp" id="eb_subject" style="margin-bottom:10px">${state.subjects.map(s=>`<option${s===b.subject?" selected":""}>${s}</option>`).join("")}</select>
+      <label class="lbl">الصف</label><select class="inp" id="eb_grade" style="margin-bottom:10px"><option value="">-- اختياري --</option>${state.grades.map(g=>`<option${g===b.grade?" selected":""}>${g}</option>`).join("")}</select>
+      <label class="lbl">عدد الأوراق</label><input class="inp" id="eb_count" type="number" value="${b.count}" style="margin-bottom:10px">
+      <label class="lbl">المصحح</label><select class="inp" id="eb_corrector" style="margin-bottom:10px"><option value="">-- اختر --</option>${state.teachers.map(t=>`<option value="${t.id}"${t.id===b.corrector?" selected":""}>${t.name}</option>`).join("")}</select>
+      <label class="lbl">المراجع</label><select class="inp" id="eb_reviewer" style="margin-bottom:10px"><option value="">-- اختر --</option>${state.teachers.map(t=>`<option value="${t.id}"${t.id===b.reviewer?" selected":""}>${t.name}</option>`).join("")}</select>
+      <label class="lbl">المدقق</label><select class="inp" id="eb_auditor" style="margin-bottom:10px"><option value="">-- اختر --</option>${state.teachers.map(t=>`<option value="${t.id}"${t.id===b.auditor?" selected":""}>${t.name}</option>`).join("")}</select>
+      <div class="row" style="display:flex; gap:8px; margin-top:16px"><button class="btn btn-navy" style="flex:1" onclick="saveEditBundle('${b.id}')"><i class="fas fa-save"></i> حفظ</button><button class="btn btn-mid" style="flex:1" onclick="document.getElementById('editOverlay').remove()">إلغاء</button></div>
+    </div>`;
+    document.body.appendChild(overlay);
+  }
+
+  function saveEditBundle(id) {
+    const b = state.bundles.find(x=>x.id===id);
+    if(!b) return;
+    b.subject = document.getElementById("eb_subject").value;
+    b.grade = document.getElementById("eb_grade").value;
+    b.count = parseInt(document.getElementById("eb_count").value) || b.count;
+    b.corrector = document.getElementById("eb_corrector").value;
+    b.reviewer = document.getElementById("eb_reviewer").value;
+    b.auditor = document.getElementById("eb_auditor").value;
+    saveState();
+    document.getElementById("editOverlay")?.remove();
+    toast("تم التعديل");
+    renderAdminList(document.getElementById("pageContent"));
+  }
+
+  // --------------------------------------------------------------
+  // ctrl_scan – مسح الباركود وتحديث المراحل
+  // --------------------------------------------------------------
+  function renderCtrlScan(el) {
+    el.innerHTML = `
+    <div class="card">
+      <p class="cardTitle"><i class="fas fa-qrcode"></i> مسح باركود المظروف</p>
+      <div style="display:flex; gap:8px; margin-bottom:12px"><input class="inp" id="scanInput" placeholder="أدخل الباركود..." dir="ltr" style="flex:1"><button class="btn btn-navy" onclick="doScan()"><i class="fas fa-search"></i> مسح</button></div>
+      <div id="scanErr"></div>
+    </div>
+    <div id="scanResult"></div>`;
+    document.getElementById("scanInput")?.addEventListener("keydown", e=>{ if(e.key==="Enter") doScan(); });
+    if(_scanHit) renderScanResult();
+  }
+
+  function doScan() {
+    const v = document.getElementById("scanInput")?.value.trim();
+    if(!v) return;
+    const b = state.bundles.find(x=>x.barcode===v);
+    if(!b) { toast("مظروف غير موجود","err"); return; }
+    _scanHit = b;
+    _confirmStg = null;
+    renderScanResult();
+  }
+
+  function renderScanResult() {
+    const container = document.getElementById("scanResult");
+    if(!container || !_scanHit) return;
+    const b = _scanHit;
+    const color = b.stage<0?"var(--navyL)":sc(b.stage);
+    const corrT = state.teachers.find(t=>t.id===b.corrector);
+    const revT = state.teachers.find(t=>t.id===b.reviewer);
+    const audT = state.teachers.find(t=>t.id===b.auditor);
+    const logHTML = [...b.log].reverse().map(e=>`<div class="logEntry" style="display:flex; gap:8px; margin-bottom:6px"><div style="width:8px; height:8px; background:${sc(e.stageIdx)}; border-radius:50%; margin-top:5px"></div><div><span class="logLabel" style="font-weight:700">${e.stageLabel}</span> <span class="logMeta" style="font-size:11px; color:var(--muted)">${fmt(e.ts)} — ${e.user}</span>${e.note?`<p style="font-size:11px">"${e.note}"</p>`:""}</div></div>`).join("");
+    container.innerHTML = `
+    <div class="card">
+      <div class="stageHeader" style="background:${color}">
+        <i class="fas fa-archive" style="font-size:36px; color:#fff"></i>
+        <div><p class="bcode">${b.barcode}</p><span class="stagePill">${b.stage<0?"جديد":state.stages[b.stage]}</span></div>
+      </div>
+      <div class="infoGrid">
+        <div class="infoCell"><div class="k">المادة</div><div class="v">${b.subject}</div></div>
+        <div class="infoCell"><div class="k">الصف</div><div class="v">${b.grade||"—"}</div></div>
+        <div class="infoCell"><div class="k">عدد الأوراق</div><div class="v">${b.count}</div></div>
+        <div class="infoCell"><div class="k">تاريخ الإنشاء</div><div class="v">${fmt(b.created)}</div></div>
+        <div class="infoCell"><div class="k">المصحح</div><div class="v">${corrT?corrT.name:"—"}</div></div>
+        <div class="infoCell"><div class="k">المراجع</div><div class="v">${revT?revT.name:"—"}</div></div>
+        <div class="infoCell"><div class="k">المدقق</div><div class="v">${audT?audT.name:"—"}</div></div>
+      </div>
+      <div class="progressWrap"><div class="progressStrip">${state.stages.map((_,i)=>`<div class="progressSeg" style="background:${i<=b.stage?sc(i):"var(--border)"}"></div>`).join("")}</div></div>
+      <div id="stageSelectorArea"></div>
+      ${b.log.length?`<hr class="divider"><div>${logHTML}</div>`:""}
+    </div>`;
+    renderStageSelector();
+  }
+
+  function renderStageSelector() {
+    const area = document.getElementById("stageSelectorArea");
+    if(!area || !_scanHit) return;
+    const b = _scanHit;
+    if(_confirmStg !== null) {
+      const idx = _confirmStg;
+      const c = sc(idx);
+      area.innerHTML = `
+      <div class="confirmBox" style="border:2px solid ${c}; border-radius:16px; padding:16px">
+        <p class="cardTitle" style="font-size:14px">تأكيد التحديث</p>
+        <div style="background:${c}15; border-radius:14px; padding:12px; margin-bottom:12px; text-align:center"><span style="font-size:18px; font-weight:800">${state.stages[idx]}</span></div>
+        <input class="inp" id="stageNote" placeholder="ملاحظة (اختياري)" style="margin-bottom:10px">
+        <div style="display:flex; gap:8px"><button class="btn" style="flex:1; background:${c}; color:#fff" onclick="doAdvance()"><i class="fas fa-check"></i> تأكيد</button><button class="btn btn-mid" style="flex:1" onclick="_confirmStg=null; renderStageSelector()">إلغاء</button></div>
+      </div>`;
+      return;
+    }
+    let html = `<p style="margin-bottom:12px; font-weight:700">اختر المرحلة الجديدة:</p>`;
+    state.stages.forEach((s,i) => {
+      const done = i<=b.stage;
+      const next = i===b.stage+1;
+      const c = sc(i);
+      html += `<button class="stageItem" ${done?"disabled":""} onclick="if(!this.disabled) { _confirmStg=${i}; renderStageSelector(); }">
+        <div class="stageNum" style="background:${done?"var(--green)":next?c:"var(--border)"}">${done?"✓":i+1}</div>
+        <span>${s}</span>${next?`<span style="background:${c}20; color:${c}; padding:2px 8px; border-radius:40px; font-size:11px">التالي</span>`:""}
+      </button>`;
+    });
+    area.innerHTML = html;
+  }
+
+  function doAdvance() {
+    if(_confirmStg===null || !_scanHit) return;
+    const idx = _confirmStg;
+    const note = document.getElementById("stageNote")?.value||"";
+    const b = state.bundles.find(x=>x.id===_scanHit.id);
+    if(!b) return;
+    b.stage = idx;
+    b.log.push({ stageIdx:idx, stageLabel:state.stages[idx], ts:nowISO(), user:currentUser.name, note });
+    saveState();
+    _scanHit = b;
+    _confirmStg = null;
+    toast(`تم الانتقال إلى: ${state.stages[idx]}`);
+    renderScanResult();
+  }
+
+  // --------------------------------------------------------------
+  // ctrl_list – قائمة المظاريف للكنترول
+  // --------------------------------------------------------------
+  function renderCtrlList(el) {
+    if(state.bundles.length===0){ el.innerHTML=`<div class="card empty">لا توجد مظاريف</div>`; return; }
+    el.innerHTML=`<div id="ctrlBundleList"></div>`;
+    const container = document.getElementById("ctrlBundleList");
+    state.bundles.forEach(b=>{
+      const stageName = b.stage<0?"جديد":state.stages[b.stage];
+      const color = b.stage<0?"var(--muted)":sc(b.stage);
+      const pct = state.stages.length?Math.round(((b.stage+1)/state.stages.length)*100):0;
+      const div = document.createElement("div");
+      div.className="bundleCard";
+      div.onclick=()=>{ _scanHit=b; _confirmStg=null; navigateTo("ctrl_scan"); setTimeout(()=>{ const inp=document.getElementById("scanInput"); if(inp) inp.value=b.barcode; renderScanResult(); },50); };
+      div.innerHTML=`
+        <div class="bundleIcon" style="background:${color}20"><i class="fas fa-envelope"></i></div>
+        <div class="bundleInfo"><div><span class="bundleName">${b.subject}</span> ${b.grade?`<span class="tag" style="background:var(--bg); color:var(--mid)">${b.grade}</span>`:""}</div><p class="bundleMeta">${b.barcode}</p><div class="bundleProgress"><div class="progressBar" style="flex:1; height:4px; background:var(--border); border-radius:5px"><div class="progressFill" style="width:${pct}%; background:${color}; height:4px"></div></div><span style="font-size:10px; margin-right:6px">${pct}%</span></div></div>
+        <span class="bundleStageBadge" style="background:${color}20; color:${color}">${stageName}</span>`;
+      container.appendChild(div);
+    });
+  }
+
+  // --------------------------------------------------------------
+  // notif_send – إرسال تنبيهات واتساب للمعلمين
+  // --------------------------------------------------------------
+  function renderNotifSend(el) {
+    const ntHTML = NOTIFY_TYPES.map(t => `<button class="ntypeBtn${_selType===t.key?" active":""}" onclick="selNType('${t.key}')" style="${_selType===t.key?`border-color:${t.color}; background:${t.color}15; color:${t.color}`:""}"><i class="fas ${t.icon}"></i> ${t.label}</button>`).join("");
+    const teachersHTML = state.teachers.map(t=>`
+      <button class="teacherRow${_selTeachers.includes(t.id)?" selected":""}" onclick="toggleTeacher('${t.id}')">
+        <div class="teacherAvatar" style="background:${_selTeachers.includes(t.id)?"var(--navy)":"var(--border)"}">${_selTeachers.includes(t.id)?"✓":t.name.charAt(0)}</div>
+        <div style="flex:1; text-align:right"><span style="font-weight:${_selTeachers.includes(t.id)?800:400}">${t.name}</span><span style="font-size:11px; color:var(--muted); margin-right:6px">${t.subject}</span></div>
+        <span class="tag" style="background:var(--purBg); color:var(--purple)">${TEACHER_ROLE_LABEL[t.role]}</span>
+        <span style="font-family:monospace; font-size:11px; color:var(--wa); direction:ltr">${t.phone}</span>
+      </button>`).join("");
+    el.innerHTML = `
+    <div class="card">
+      <p class="cardTitle"><i class="fas fa-paper-plane"></i> إرسال تنبيه واتساب</p>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px">${ntHTML}</div>
+      <div id="teacherList" style="margin-bottom:16px">${teachersHTML}</div>
+      <label class="lbl">ربط بمظروف (اختياري)</label>
+      <select class="inp" id="notif_bundle" style="margin-bottom:12px" onchange="_selBundle=this.value"><option value="">-- بدون ربط --</option>${state.bundles.map(b=>`<option value="${b.id}"${_selBundle===b.id?" selected":""}>${b.barcode} — ${b.subject}</option>`).join("")}</select>
+      <label class="lbl">نص الرسالة</label>
+      <textarea class="inp" id="notif_msg" rows="3" placeholder="اكتب نص التنبيه..."></textarea>
+      <div id="notifPreview" style="margin-top:12px"></div>
+      <div style="display:flex; gap:8px; margin-top:16px"><button class="btn btn-wa" style="flex:1" onclick="sendNotif()"><i class="fab fa-whatsapp"></i> إرسال عبر واتساب</button><button class="btn btn-mid" style="flex:1" onclick="clearNotif()">مسح</button></div>
+      <hr class="divider">
+      <p><i class="fas fa-phone-alt"></i> رقم واتساب المدير: <strong>${state.adminPhone}</strong> <a href="${waLink(state.adminPhone,"مرحباً")}" target="_blank" class="btn btn-wa btn-sm"><i class="fab fa-whatsapp"></i> مراسلة</a></p>
+    </div>`;
+    document.getElementById("notif_msg")?.addEventListener("input", updatePreview);
+    updatePreview();
+  }
+
+  function selNType(key) { _selType=key; renderNotifSend(document.getElementById("pageContent")); }
+  function toggleTeacher(id) { _selTeachers = _selTeachers.includes(id) ? _selTeachers.filter(x=>x!==id) : [..._selTeachers,id]; renderNotifSend(document.getElementById("pageContent")); }
+  function clearNotif() { _selTeachers=[]; _selType="correction"; _selBundle=""; renderNotifSend(document.getElementById("pageContent")); }
+  function updatePreview() {
+    const msg = document.getElementById("notif_msg")?.value||"";
+    const prev = document.getElementById("notifPreview");
+    if(!prev) return;
+    if(!msg || _selTeachers.length===0) { prev.innerHTML=""; return; }
+    const nt = NOTIFY_TYPES.find(t=>t.key===_selType);
+    const names = _selTeachers.map(id=>state.teachers.find(t=>t.id===id)?.name).filter(Boolean).join("، ");
+    prev.innerHTML = `<div style="background:var(--bg); border-radius:16px; padding:12px"><p style="font-weight:700">معاينة:</p><div style="background:white; border-radius:12px; padding:12px; border-right:3px solid ${nt.color}"><p>${msg}</p><p style="font-size:11px; color:var(--muted); margin-top:6px">إلى: ${names}</p></div></div>`;
+  }
+
+  function sendNotif() {
+    if(_selTeachers.length===0) { toast("اختر معلماً على الأقل","err"); return; }
+    const msg = document.getElementById("notif_msg")?.value.trim();
+    if(!msg) { toast("أدخل نص الرسالة","err"); return; }
+    const nt = NOTIFY_TYPES.find(t=>t.key===_selType);
+    const bundle = state.bundles.find(b=>b.id===_selBundle)||null;
+    const teachersSel = _selTeachers.map(id=>state.teachers.find(t=>t.id===id)).filter(Boolean);
+    const fullMsg = `*${nt.label}*\n${state.schoolName}\n\n${msg}${bundle?`\nالمظروف: ${bundle.barcode}`:""}\n— ${currentUser.name}`;
+    state.notifLog.unshift({ id:uid(), ts:nowISO(), type:_selType, typeLabel:nt.label, typeColor:nt.color, typeIcon:nt.icon, teachers:teachersSel, message:msg, bundle, sentBy:currentUser.name, waMsg:fullMsg });
+    saveState();
+    teachersSel.forEach((t,i)=>{
+      setTimeout(()=>window.open(waLink(t.phone, fullMsg), "_blank"), i*500);
+    });
+    toast(`تم الإرسال لـ ${teachersSel.length} معلم`,"wa");
+    _selTeachers=[]; _selBundle="";
+    renderNotifSend(document.getElementById("pageContent"));
+  }
+
+  // --------------------------------------------------------------
+  // notif_log – سجل التنبيهات
+  // --------------------------------------------------------------
+  function renderNotifLog(el) {
+    if(!state.notifLog.length) { el.innerHTML=`<div class="card empty">لا توجد تنبيهات</div>`; return; }
+    el.innerHTML = `<div>${state.notifLog.map(n=>`
+      <div class="card" style="border-right:4px solid ${n.typeColor||"#ccc"}">
+        <div style="display:flex; gap:12px; align-items:center"><i class="fas ${n.typeIcon} fa-2x" style="color:${n.typeColor}"></i><div><p><strong>${n.typeLabel}</strong> <span style="font-size:11px; color:var(--muted)">${fmt(n.ts)}</span> — ${n.sentBy}</p><p>${n.message}</p><div>${(n.teachers||[]).map(t=>`<a href="${waLink(t.phone,n.waMsg||'')}" target="_blank" class="btn btn-sm btn-wa" style="margin-left:4px"><i class="fab fa-whatsapp"></i> ${t.name}</a>`).join("")}</div>${n.bundle?`<p class="tag">مظروف: ${n.bundle.barcode}</p>`:""}</div></div>
+      </div>`).join("")}</div>`;
+  }
+
+  // --------------------------------------------------------------
+  // الإعدادات (settings) – كاملة
+  // --------------------------------------------------------------
+  function renderSettings(el) {
+    if(!_editStages) _editStages = [...state.stages];
+    const tabs = [["general","🏫 عام"],["subjects","📚 مواد"],["grades","🎓 صفوف"],["stages","🔄 مراحل"],["teachers","👨‍🏫 معلمون"],["users","👥 حسابات"],["phone","📱 واتساب"]];
+    el.innerHTML = `<div class="card"><div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:16px">${tabs.map(([k,l])=>`<button class="btn btn-sm${_sTab===k?" btn-navy":" btn-mid"}" onclick="_sTab='${k}'; renderSettings(document.getElementById('pageContent'))">${l}</button>`).join("")}</div><div id="sTabContent"></div></div>`;
+    const sDiv = document.getElementById("sTabContent");
+    if(_sTab==="general") sDiv.innerHTML = `<div><label class="lbl">اسم المدرسة</label><input class="inp" id="s_school" value="${state.schoolName}"><button class="btn btn-navy btn-full mt-2" onclick="state.schoolName=document.getElementById('s_school').value; document.getElementById('hSchool').innerText=state.schoolName; document.getElementById('loginSchoolName').innerText=state.schoolName; saveState(); toast('تم الحفظ')">حفظ</button><hr><button class="btn btn-red btn-full" onclick="if(confirm('حذف كل البيانات؟')){ localStorage.clear(); location.reload(); }">إعادة تعيين كامل</button></div>`;
+    else if(_sTab==="subjects") sDiv.innerHTML = `<div>${state.subjects.map((s,i)=>`<div class="listItem" style="display:flex; justify-content:space-between; margin-bottom:6px"><span>${s}</span><button class="btn btn-sm btn-red" onclick="state.subjects.splice(${i},1); saveState(); renderSettings(document.getElementById('pageContent'))">حذف</button></div>`).join("")}<input class="inp" id="newSubj" placeholder="مادة جديدة"><button class="btn btn-navy btn-full mt-2" onclick="if(document.getElementById('newSubj').value.trim()){ state.subjects.push(document.getElementById('newSubj').value.trim()); saveState(); renderSettings(document.getElementById('pageContent')); }">إضافة</button></div>`;
+    else if(_sTab==="grades") sDiv.innerHTML = `<div>${state.grades.map((g,i)=>`<div style="display:flex; justify-content:space-between"><span>${g}</span><button class="btn btn-sm btn-red" onclick="state.grades.splice(${i},1); saveState(); renderSettings(document.getElementById('pageContent'))">حذف</button></div>`).join("")}<input class="inp" id="newGrade" placeholder="صف جديد"><button class="btn btn-navy btn-full" onclick="if(document.getElementById('newGrade').value.trim()){ state.grades.push(document.getElementById('newGrade').value.trim()); saveState(); renderSettings(document.getElementById('pageContent')); }">إضافة</button></div>`;
+    else if(_sTab==="stages") {
+      sDiv.innerHTML = `<div id="stageEditList">${_editStages.map((s,i)=>`<div style="display:flex; gap:8px; margin-bottom:6px"><div class="stageNum" style="background:${sc(i)}">${i+1}</div><input class="inp" value="${s}" onchange="_editStages[${i}]=this.value"><button class="btn btn-sm btn-red" onclick="_editStages.splice(${i},1); renderSettings(document.getElementById('pageContent'))">حذف</button></div>`).join("")}</div><input class="inp" id="newStage" placeholder="مرحلة جديدة"><button class="btn btn-navy btn-full" onclick="if(document.getElementById('newStage').value.trim()){ _editStages.push(document.getElementById('newStage').value.trim()); renderSettings(document.getElementById('pageContent')); }">إضافة</button><button class="btn btn-green btn-full mt-2" onclick="state.stages=[..._editStages]; saveState(); toast('تم حفظ المراحل')">حفظ المراحل</button>`;
+    } else if(_sTab==="teachers") {
+      sDiv.innerHTML = `<div>${state.teachers.map(t=>`<div style="display:flex; gap:6px; align-items:center; margin-bottom:6px"><span>${t.name} (${t.subject})</span><span>${t.phone}</span><button class="btn btn-sm btn-red" onclick="state.teachers=state.teachers.filter(x=>x.id!='${t.id}'); saveState(); renderSettings(document.getElementById('pageContent'))">حذف</button></div>`).join("")}</div><hr><div class="g2"><input class="inp" id="nt_name" placeholder="الاسم"><input class="inp" id="nt_phone" placeholder="رقم الواتساب" dir="ltr"></div><div class="g2"><select class="inp" id="nt_subject">${state.subjects.map(s=>`<option>${s}</option>`).join("")}</select><select class="inp" id="nt_role"><option value="corrector">مصحح</option><option value="reviewer">مراجع</option><option value="auditor">مدقق</option></select></div><button class="btn btn-navy btn-full" onclick="addTeacher()">إضافة معلم</button>`;
+    } else if(_sTab==="users") {
+      sDiv.innerHTML = `<div>${state.users.map(u=>`<div style="display:flex; gap:8px; margin-bottom:6px"><span>${u.name} (${u.username})</span><span class="tag">${ROLE_LABEL[u.role]}</span>${u.id!==currentUser?.id?`<button class="btn btn-sm btn-red" onclick="state.users=state.users.filter(x=>x.id!='${u.id}'); saveState(); renderSettings(document.getElementById('pageContent')); renderLoginDemos();">حذف</button>`:""}</div>`).join("")}</div><hr><div class="g2"><input class="inp" id="nu_name" placeholder="الاسم"><input class="inp" id="nu_user" placeholder="اسم المستخدم" dir="ltr"></div><div class="g2"><input class="inp" id="nu_pass" placeholder="كلمة المرور" dir="ltr"><select class="inp" id="nu_role"><option value="admin">مدير</option><option value="controller">كنترول</option><option value="notifier">تنبيهات</option></select></div><button class="btn btn-navy btn-full" onclick="addUser()">إضافة حساب</button>`;
+    } else if(_sTab==="phone") {
+      sDiv.innerHTML = `<div><label class="lbl">رقم واتساب المدير</label><input class="inp" id="s_adminPhone" value="${state.adminPhone}" dir="ltr"><button class="btn btn-navy btn-full mt-2" onclick="state.adminPhone=document.getElementById('s_adminPhone').value.trim(); saveState(); toast('تم الحفظ')">حفظ الرقم</button></div>`;
+    }
+  }
+
+  function addTeacher() {
+    const name = document.getElementById("nt_name")?.value.trim();
+    const phone = document.getElementById("nt_phone")?.value.trim();
+    const subject = document.getElementById("nt_subject")?.value;
+    const role = document.getElementById("nt_role")?.value;
+    if(!name||!phone) { toast("أكمل البيانات","err"); return; }
+    state.teachers.push({ id:"T"+uid(), name, phone, subject, role });
+    saveState();
+    toast("تم إضافة المعلم");
+    renderSettings(document.getElementById("pageContent"));
+  }
+  function addUser() {
+    const name = document.getElementById("nu_name")?.value.trim();
+    const user = document.getElementById("nu_user")?.value.trim();
+    const pass = document.getElementById("nu_pass")?.value;
+    const role = document.getElementById("nu_role")?.value;
+    if(!name||!user||!pass) { toast("أكمل البيانات","err"); return; }
+    if(state.users.find(u=>u.username===user)) { toast("المستخدم موجود","err"); return; }
+    state.users.push({ id:"U"+uid(), name, username:user, password:pass, role });
+    saveState();
+    toast("تمت الإضافة");
+    renderSettings(document.getElementById("pageContent"));
+    renderLoginDemos();
+  }
+
+  // --------------------------------------------------------------
+  // ctrl_schedule – جدول الاختبارات
+  // --------------------------------------------------------------
+  function renderCtrlSchedule(el) {
+    const bundlesWithDate = state.bundles.filter(b=>b.examDate);
+    if(!bundlesWithDate.length) { el.innerHTML=`<div class="card empty">لا توجد مظاريف بتاريخ اختبار</div>`; return; }
+    el.innerHTML = `<div class="card"><p class="cardTitle"><i class="fas fa-calendar-alt"></i> جدول الاختبارات</p><div style="overflow-x:auto"><table style="width:100%; border-collapse:collapse"><thead><tr style="background:var(--navy); color:#fff"><th>المادة</th><th>الصف</th><th>اليوم</th><th>التاريخ</th><th>الوقت</th><th>القاعة</th><th>الأوراق</th><th>الحالة</th></tr></thead><tbody>${bundlesWithDate.sort((a,b)=>a.examDate.localeCompare(b.examDate)).map(b=>`<tr><td>${b.subject}</td><td>${b.grade||"—"}</td><td>${b.examDay||"—"}</td><td>${b.examDate}</td><td>${b.examStart||""}${b.examEnd?"-"+b.examEnd:""}</td><td>${b.examHall||"—"}</td><td>${b.count}</td><td>${b.stage<0?"جديد":state.stages[b.stage]}</td></tr>`).join("")}</tbody></table></div><button class="btn btn-navy btn-full mt-2" onclick="printSchedule()"><i class="fas fa-print"></i> طباعة الجدول</button></div>`;
+  }
+  function printSchedule() {
+    const win = window.open("","_blank");
+    const rows = state.bundles.filter(b=>b.examDate).map(b=>`<tr><td>${b.subject}</td><td>${b.grade||""}</td><td>${b.examDay}</td><td>${b.examDate}</td><td>${b.examStart}${b.examEnd?"-"+b.examEnd:""}</td><td>${b.examHall}</td><td>${b.count}</td></tr>`).join("");
+    win.document.write(`<html><body><h2>${state.schoolName}</h2><table border="1"><tr><th>المادة</th><th>الصف</th><th>اليوم</th><th>التاريخ</th><th>الوقت</th><th>القاعة</th><th>الأوراق</th></tr>${rows}</table><button onclick="window.print()">طباعة</button></body></html>`);
+    win.document.close();
+  }
+
+  // --------------------------------------------------------------
+  // ctrl_report – تقارير PDF
+  // --------------------------------------------------------------
+  function renderCtrlReport(el) {
+    const subjects = [...new Set(state.bundles.map(b=>b.subject))];
+    if(!state.bundles.length) { el.innerHTML=`<div class="card empty">لا توجد مظاريف</div>`; return; }
+    el.innerHTML = `<div class="card"><p class="cardTitle"><i class="fas fa-file-pdf"></i> تقارير PDF</p><button class="btn btn-navy btn-full" onclick="generatePDF('ALL')">تقرير شامل</button><hr>${subjects.map(s=>`<button class="btn btn-mid btn-full mt-2" onclick="generatePDF('${s}')">تقرير مادة ${s}</button>`).join("")}</div>`;
+  }
+  function generatePDF(subjectFilter) {
+    const bundles = subjectFilter==="ALL" ? state.bundles : state.bundles.filter(b=>b.subject===subjectFilter);
+    if(!bundles.length) return;
+    const win = window.open("","_blank");
+    win.document.write(`<html><body style="font-family:Tajawal"><h2>${state.schoolName}</h2><p>تقرير ${subjectFilter}</p><table border="1"><tr><th>الباركود</th><th>المادة</th><th>المرحلة</th></tr>${bundles.map(b=>`<tr><td>${b.barcode}</td><td>${b.subject}</td><td>${b.stage<0?"جديد":state.stages[b.stage]}</td></tr>`).join("")}</table><button onclick="window.print()">طباعة</button></body></html>`);
+    win.document.close();
+  }
+
+  // --------------------------------------------------------------
+  // بدء التشغيل
+  // --------------------------------------------------------------
+  renderLoginDemos();
 </script>
 </body>
 </html>
