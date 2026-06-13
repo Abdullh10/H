@@ -730,7 +730,7 @@ let currentPage = "";
 
 const ROLE_LABEL  = { admin:"مدير النظام", controller:"الكنترول", notifier:"مسؤول التنبيهات" };
 const ROLE_COLORS = { admin:["#92610A","#FEF3C7"], controller:["#1E40AF","#DBEAFE"], notifier:["#5B21B6","#EDE9FE"] };
-const TEACHER_ROLE_LABEL = { corrector:"مصحح", reviewer:"مراجع", auditor:"مدقق" };
+const TEACHER_ROLE_LABEL = { corrector:"مصحح 1", corrector2:"مصحح 2", reviewer:"مراجع 1", reviewer2:"مراجع 2", auditor:"مدقق 1", auditor2:"مدقق 2" };
 const NOTIFY_TYPES = [
   { key:"correction", label:"طلب تصحيح",    icon:"✎", color:"#EF4444" },
   { key:"review",     label:"طلب مراجعة",   icon:"◎", color:"#F97316" },
@@ -981,25 +981,48 @@ function renderAdminNew(el) {
       <input class="inp" id="bf_count" type="number" min="1" placeholder="مثال: 32"/>
     </div>
     <p style="font-size:12px;font-weight:700;color:var(--mid);margin:12px 0 8px">تكليفات المظروف</p>
-    <div class="g3" style="margin-bottom:10px">
+    <div class="g3" style="margin-bottom:6px">
       <div>
-        <label class="lbl">المصحح</label>
+        <label class="lbl">المصحح 1 *</label>
         <select class="inp" id="bf_corrector">
           <option value="">-- اختر --</option>
           ${state.teachers.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}
         </select>
       </div>
       <div>
-        <label class="lbl">المراجع</label>
+        <label class="lbl">المراجع 1 *</label>
         <select class="inp" id="bf_reviewer">
           <option value="">-- اختر --</option>
           ${state.teachers.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}
         </select>
       </div>
       <div>
-        <label class="lbl">المدقق</label>
+        <label class="lbl">المدقق 1 *</label>
         <select class="inp" id="bf_auditor">
           <option value="">-- اختر --</option>
+          ${state.teachers.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+    <div class="g3" style="margin-bottom:10px">
+      <div>
+        <label class="lbl" style="color:var(--muted)">المصحح 2 <span style="font-size:10px;font-weight:400">(اختياري)</span></label>
+        <select class="inp" id="bf_corrector2">
+          <option value="">-- لا يوجد --</option>
+          ${state.teachers.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}
+        </select>
+      </div>
+      <div>
+        <label class="lbl" style="color:var(--muted)">المراجع 2 <span style="font-size:10px;font-weight:400">(اختياري)</span></label>
+        <select class="inp" id="bf_reviewer2">
+          <option value="">-- لا يوجد --</option>
+          ${state.teachers.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}
+        </select>
+      </div>
+      <div>
+        <label class="lbl" style="color:var(--muted)">المدقق 2 <span style="font-size:10px;font-weight:400">(اختياري)</span></label>
+        <select class="inp" id="bf_auditor2">
+          <option value="">-- لا يوجد --</option>
           ${state.teachers.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}
         </select>
       </div>
@@ -1042,24 +1065,27 @@ function renderAdminNew(el) {
 }
 
 function submitNewBundle() {
-  const subject   = document.getElementById("bf_subject").value;
-  const grade     = document.getElementById("bf_grade").value;
-  const count     = document.getElementById("bf_count").value;
-  const corrector = document.getElementById("bf_corrector").value;
-  const reviewer  = document.getElementById("bf_reviewer").value;
-  const auditor   = document.getElementById("bf_auditor").value;
-  const note      = document.getElementById("bf_note").value;
-  const examDay   = (document.getElementById("bf_day")||{value:""}).value||"";
-  const examDate  = (document.getElementById("bf_examdate")||{value:""}).value||"";
-  const examHall  = (document.getElementById("bf_hall")||{value:""}).value||"";
-  const examStart = (document.getElementById("bf_start")||{value:""}).value||"";
-  const examEnd   = (document.getElementById("bf_end")||{value:""}).value||"";
+  const subject    = document.getElementById("bf_subject").value;
+  const grade      = document.getElementById("bf_grade").value;
+  const count      = document.getElementById("bf_count").value;
+  const corrector  = document.getElementById("bf_corrector").value;
+  const corrector2 = document.getElementById("bf_corrector2").value;
+  const reviewer   = document.getElementById("bf_reviewer").value;
+  const reviewer2  = document.getElementById("bf_reviewer2").value;
+  const auditor    = document.getElementById("bf_auditor").value;
+  const auditor2   = document.getElementById("bf_auditor2").value;
+  const note       = document.getElementById("bf_note").value;
+  const examDay    = (document.getElementById("bf_day")||{value:""}).value||"";
+  const examDate   = (document.getElementById("bf_examdate")||{value:""}).value||"";
+  const examHall   = (document.getElementById("bf_hall")||{value:""}).value||"";
+  const examStart  = (document.getElementById("bf_start")||{value:""}).value||"";
+  const examEnd    = (document.getElementById("bf_end")||{value:""}).value||"";
   if(!subject) { toast("اختر المادة","err"); return; }
   if(!count||isNaN(count)||+count<1) { toast("أدخل عدد الأوراق","err"); return; }
   const b = {
     id:uid(), barcode:`M${uid()}`,
     subject, grade, count:+count,
-    corrector, reviewer, auditor, note,
+    corrector, corrector2, reviewer, reviewer2, auditor, auditor2, note,
     examDay, examDate, examHall, examStart, examEnd,
     stage:-1, log:[], created:nowISO(),
   };
@@ -1071,9 +1097,12 @@ function submitNewBundle() {
 }
 
 function renderBundleSuccess(el, b) {
-  const corrT = state.teachers.find(t=>t.id===b.corrector);
-  const revT  = state.teachers.find(t=>t.id===b.reviewer);
-  const audT  = state.teachers.find(t=>t.id===b.auditor);
+  const corrT  = state.teachers.find(t=>t.id===b.corrector);
+  const corrT2 = state.teachers.find(t=>t.id===b.corrector2);
+  const revT   = state.teachers.find(t=>t.id===b.reviewer);
+  const revT2  = state.teachers.find(t=>t.id===b.reviewer2);
+  const audT   = state.teachers.find(t=>t.id===b.auditor);
+  const audT2  = state.teachers.find(t=>t.id===b.auditor2);
   el.innerHTML = `
   <div class="card" style="text-align:center">
     <div style="font-size:48px;margin-bottom:8px">✅</div>
@@ -1082,9 +1111,12 @@ function renderBundleSuccess(el, b) {
     <div id="printArea" class="qr-wrap">${makeQR(b.barcode,150)}</div>
     <p style="font-family:monospace;font-size:22px;font-weight:900;letter-spacing:3px;color:var(--navy);margin:0 0 14px">${b.barcode}</p>
     <div style="background:var(--amberBg);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--amber);margin-bottom:8px;text-align:right">
-      ${corrT?`✏️ المصحح: <strong>${corrT.name}</strong>&nbsp;&nbsp;`:""}
-      ${revT?`🔍 المراجع: <strong>${revT.name}</strong>&nbsp;&nbsp;`:""}
-      ${audT?`🔏 المدقق: <strong>${audT.name}</strong>`:""}
+      ${corrT?`✏️ مصحح 1: <strong>${corrT.name}</strong>&nbsp;&nbsp;`:""}
+      ${corrT2?`✏️ مصحح 2: <strong>${corrT2.name}</strong>&nbsp;&nbsp;`:""}
+      ${revT?`🔍 مراجع 1: <strong>${revT.name}</strong>&nbsp;&nbsp;`:""}
+      ${revT2?`🔍 مراجع 2: <strong>${revT2.name}</strong>&nbsp;&nbsp;`:""}
+      ${audT?`🔏 مدقق 1: <strong>${audT.name}</strong>&nbsp;&nbsp;`:""}
+      ${audT2?`🔏 مدقق 2: <strong>${audT2.name}</strong>`:""}
     </div>
     <div style="background:var(--amberBg);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--amber);margin-bottom:18px">
       📌 اطبع هذا الباركود وألصقه على المظروف
@@ -1190,20 +1222,35 @@ function adminEditBundle(id) {
     </select>
     <label class="lbl">عدد الأوراق</label>
     <input class="inp" id="eb_count" type="number" value="${b.count}" style="margin-bottom:10px"/>
-    <label class="lbl">المصحح</label>
-    <select class="inp" id="eb_corrector" style="margin-bottom:10px">
+    <label class="lbl">المصحح 1</label>
+    <select class="inp" id="eb_corrector" style="margin-bottom:8px">
       <option value="">-- اختر --</option>
       ${state.teachers.map(t=>`<option value="${t.id}"${t.id===b.corrector?" selected":""}>${t.name}</option>`).join("")}
     </select>
-    <label class="lbl">المراجع</label>
-    <select class="inp" id="eb_reviewer" style="margin-bottom:10px">
+    <label class="lbl" style="color:var(--muted)">المصحح 2 (اختياري)</label>
+    <select class="inp" id="eb_corrector2" style="margin-bottom:10px">
+      <option value="">-- لا يوجد --</option>
+      ${state.teachers.map(t=>`<option value="${t.id}"${t.id===b.corrector2?" selected":""}>${t.name}</option>`).join("")}
+    </select>
+    <label class="lbl">المراجع 1</label>
+    <select class="inp" id="eb_reviewer" style="margin-bottom:8px">
       <option value="">-- اختر --</option>
       ${state.teachers.map(t=>`<option value="${t.id}"${t.id===b.reviewer?" selected":""}>${t.name}</option>`).join("")}
     </select>
-    <label class="lbl">المدقق</label>
-    <select class="inp" id="eb_auditor" style="margin-bottom:16px">
+    <label class="lbl" style="color:var(--muted)">المراجع 2 (اختياري)</label>
+    <select class="inp" id="eb_reviewer2" style="margin-bottom:10px">
+      <option value="">-- لا يوجد --</option>
+      ${state.teachers.map(t=>`<option value="${t.id}"${t.id===b.reviewer2?" selected":""}>${t.name}</option>`).join("")}
+    </select>
+    <label class="lbl">المدقق 1</label>
+    <select class="inp" id="eb_auditor" style="margin-bottom:8px">
       <option value="">-- اختر --</option>
       ${state.teachers.map(t=>`<option value="${t.id}"${t.id===b.auditor?" selected":""}>${t.name}</option>`).join("")}
+    </select>
+    <label class="lbl" style="color:var(--muted)">المدقق 2 (اختياري)</label>
+    <select class="inp" id="eb_auditor2" style="margin-bottom:16px">
+      <option value="">-- لا يوجد --</option>
+      ${state.teachers.map(t=>`<option value="${t.id}"${t.id===b.auditor2?" selected":""}>${t.name}</option>`).join("")}
     </select>
     <p style="font-size:12px;font-weight:700;color:var(--mid);margin:8px 0 6px">📅 بيانات الاختبار</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
@@ -1238,17 +1285,20 @@ function adminEditBundle(id) {
 function saveEditBundle(id) {
   const b = state.bundles.find(x=>x.id===id);
   if(!b)return;
-  b.subject   = document.getElementById("eb_subject").value||b.subject;
-  b.grade     = document.getElementById("eb_grade").value;
-  b.count     = +document.getElementById("eb_count").value||b.count;
-  b.corrector = document.getElementById("eb_corrector").value;
-  b.reviewer  = document.getElementById("eb_reviewer").value;
-  b.auditor   = document.getElementById("eb_auditor").value;
-  b.examDay   = (document.getElementById("eb_day")||{value:""}).value||b.examDay||"";
-  b.examDate  = (document.getElementById("eb_examdate")||{value:""}).value||b.examDate||"";
-  b.examHall  = (document.getElementById("eb_hall")||{value:""}).value||b.examHall||"";
-  b.examStart = (document.getElementById("eb_start")||{value:""}).value||b.examStart||"";
-  b.examEnd   = (document.getElementById("eb_end")||{value:""}).value||b.examEnd||"";
+  b.subject    = document.getElementById("eb_subject").value||b.subject;
+  b.grade      = document.getElementById("eb_grade").value;
+  b.count      = +document.getElementById("eb_count").value||b.count;
+  b.corrector  = document.getElementById("eb_corrector").value;
+  b.corrector2 = document.getElementById("eb_corrector2").value;
+  b.reviewer   = document.getElementById("eb_reviewer").value;
+  b.reviewer2  = document.getElementById("eb_reviewer2").value;
+  b.auditor    = document.getElementById("eb_auditor").value;
+  b.auditor2   = document.getElementById("eb_auditor2").value;
+  b.examDay    = (document.getElementById("eb_day")||{value:""}).value||b.examDay||"";
+  b.examDate   = (document.getElementById("eb_examdate")||{value:""}).value||b.examDate||"";
+  b.examHall   = (document.getElementById("eb_hall")||{value:""}).value||b.examHall||"";
+  b.examStart  = (document.getElementById("eb_start")||{value:""}).value||b.examStart||"";
+  b.examEnd    = (document.getElementById("eb_end")||{value:""}).value||b.examEnd||"";
   saveState();
   saveState();
   saveBundleToCloud(b);
@@ -1435,10 +1485,13 @@ function renderScanResult() {
   const container=document.getElementById("scanResult");
   if(!container||!_scanHit)return;
   const b=_scanHit;
-  const color = b.stage<0?"var(--navyL)":sc(b.stage);
-  const corrT = state.teachers.find(t=>t.id===b.corrector);
-  const revT  = state.teachers.find(t=>t.id===b.reviewer);
-  const audT  = state.teachers.find(t=>t.id===b.auditor);
+  const color  = b.stage<0?"var(--navyL)":sc(b.stage);
+  const corrT  = state.teachers.find(t=>t.id===b.corrector);
+  const corrT2 = state.teachers.find(t=>t.id===b.corrector2);
+  const revT   = state.teachers.find(t=>t.id===b.reviewer);
+  const revT2  = state.teachers.find(t=>t.id===b.reviewer2);
+  const audT   = state.teachers.find(t=>t.id===b.auditor);
+  const audT2  = state.teachers.find(t=>t.id===b.auditor2);
   const pct   = state.stages.length ? Math.max(0,Math.round(((b.stage+1)/state.stages.length)*100)) : 0;
   const logHTML = [...b.log].reverse().map(e=>`
     <div class="log-entry">
@@ -1467,9 +1520,12 @@ function renderScanResult() {
       <div class="info-cell"><p class="k">الصف</p><p class="v">${b.grade||"—"}</p></div>
       <div class="info-cell"><p class="k">عدد الأوراق</p><p class="v">${b.count} ورقة</p></div>
       <div class="info-cell"><p class="k">تاريخ الإنشاء</p><p class="v">${fmt(b.created)}</p></div>
-      <div class="info-cell"><p class="k">✏️ المصحح</p><p class="v">${corrT?corrT.name:"—"}</p></div>
-      <div class="info-cell"><p class="k">🔍 المراجع</p><p class="v">${revT?revT.name:"—"}</p></div>
-      <div class="info-cell"><p class="k">🔏 المدقق</p><p class="v">${audT?audT.name:"—"}</p></div>
+      <div class="info-cell"><p class="k">✏️ مصحح 1</p><p class="v">${corrT?corrT.name:"—"}</p></div>
+      ${corrT2?`<div class="info-cell"><p class="k">✏️ مصحح 2</p><p class="v">${corrT2.name}</p></div>`:""}
+      <div class="info-cell"><p class="k">🔍 مراجع 1</p><p class="v">${revT?revT.name:"—"}</p></div>
+      ${revT2?`<div class="info-cell"><p class="k">🔍 مراجع 2</p><p class="v">${revT2.name}</p></div>`:""}
+      <div class="info-cell"><p class="k">🔏 مدقق 1</p><p class="v">${audT?audT.name:"—"}</p></div>
+      ${audT2?`<div class="info-cell"><p class="k">🔏 مدقق 2</p><p class="v">${audT2.name}</p></div>`:""}
       ${b.note?`<div class="info-cell"><p class="k">ملاحظة</p><p class="v">${b.note}</p></div>`:""}
       ${b.examDate?`<div class="info-cell"><p class="k">📅 يوم الاختبار</p><p class="v">${b.examDay||""} ${b.examDate}</p></div>`:""}
       ${b.examStart?`<div class="info-cell"><p class="k">⏰ وقت الاختبار</p><p class="v">${b.examStart}${b.examEnd?" — "+b.examEnd:""}</p></div>`:""}
@@ -1875,9 +1931,12 @@ function renderSTeachers(el) {
         ${state.subjects.map(s=>`<option>${s}</option>`).join("")}
       </select>
       <select class="inp" id="nt_role">
-        <option value="corrector">مصحح</option>
-        <option value="reviewer">مراجع</option>
-        <option value="auditor">مدقق</option>
+        <option value="corrector">مصحح 1</option>
+        <option value="corrector2">مصحح 2</option>
+        <option value="reviewer">مراجع 1</option>
+        <option value="reviewer2">مراجع 2</option>
+        <option value="auditor">مدقق 1</option>
+        <option value="auditor2">مدقق 2</option>
       </select>
     </div>
     <button class="btn btn-navy btn-full" onclick="addTeacher()">➕ إضافة معلم</button>
@@ -2391,8 +2450,12 @@ function processXlsxFile(file) {
 
       // Parse data rows
       const ROLE_MAP = {
-        "مصحح":"corrector","corrector":"corrector","مراجع":"reviewer","reviewer":"reviewer",
-        "مدقق":"auditor","auditor":"auditor"
+        "مصحح":"corrector","مصحح 1":"corrector","corrector":"corrector",
+        "مصحح 2":"corrector2","corrector2":"corrector2",
+        "مراجع":"reviewer","مراجع 1":"reviewer","reviewer":"reviewer",
+        "مراجع 2":"reviewer2","reviewer2":"reviewer2",
+        "مدقق":"auditor","مدقق 1":"auditor","auditor":"auditor",
+        "مدقق 2":"auditor2","auditor2":"auditor2"
       };
       const parsed=[], errors=[];
       for(let i=headerRow+1;i<rows.length;i++){
@@ -2405,7 +2468,7 @@ function processXlsxFile(file) {
         if(!name&&!phone) continue; // empty row
         const role = ROLE_MAP[roleRaw];
         if(!name)  { errors.push(`صف ${i+1}: الاسم مفقود`); continue; }
-        if(!role)  { errors.push(`صف ${i+1} (${name}): الدور "${roleRaw}" غير معروف — استخدم: مصحح / مراجع / مدقق`); continue; }
+        if(!role)  { errors.push(`صف ${i+1} (${name}): الدور "${roleRaw}" غير معروف — استخدم: مصحح 1 / مصحح 2 / مراجع 1 / مراجع 2 / مدقق 1 / مدقق 2`); continue; }
         if(!phone) { errors.push(`صف ${i+1} (${name}): رقم الجوال مفقود`); continue; }
         // Normalize phone
         let p=phone.replace(/\s/g,"");
