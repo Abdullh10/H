@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
-<title>نظام تتبع مظاريف الاختبارات</title>
+<title>متابعة سير الاختبارات الإلكتروني</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -471,8 +471,8 @@ label.lbl{font-size:12px;color:var(--mid);display:block;margin-bottom:5px;font-w
   <div class="login-card">
     <div class="login-logo">
       <div class="login-icon">📦</div>
-      <h1 id="loginSchoolName">مدرسة النموذجية الثانوية</h1>
-      <p>نظام تتبع مظاريف الاختبارات</p>
+      <h1 id="loginSchoolName">متابعة سير الاختبارات الإلكتروني</h1>
+      <p>برمجة الأستاذ عبدالله حمدي</p>
     </div>
     <div id="loginErr" class="login-err" style="display:none"></div>
     <div class="login-field">
@@ -483,9 +483,37 @@ label.lbl{font-size:12px;color:var(--mid);display:block;margin-bottom:5px;font-w
       <input class="inp" id="loginPass" placeholder="كلمة المرور" type="password" dir="ltr" autocomplete="current-password" style="margin-bottom:16px"/>
     </div>
     <button class="btn btn-navy btn-full" onclick="doLogin()">دخول إلى النظام</button>
-    <div class="demo-section">
-      <p>حسابات تجريبية — اضغط للملء التلقائي</p>
-      <div id="demoBtns"></div>
+    <div class="demo-section" style="padding:0;background:none;border:none">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button onclick="quickLogin('admin','admin123')"
+          style="display:flex;align-items:center;gap:12px;padding:13px 15px;background:linear-gradient(135deg,#0B1D3A,#1D3561);border:none;border-radius:12px;cursor:pointer;width:100%;font-family:inherit">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🔑</div>
+          <div style="flex:1;text-align:right">
+            <p style="color:#fff;font-weight:700;font-size:13px;margin:0">مدير النظام</p>
+            <p style="color:rgba(255,255,255,.5);font-size:11px;margin:0;font-family:monospace;direction:ltr">admin / admin123</p>
+          </div>
+          <span style="color:rgba(255,255,255,.35);font-size:18px">←</span>
+        </button>
+        <button onclick="quickLogin('ctrl','ctrl123')"
+          style="display:flex;align-items:center;gap:12px;padding:13px 15px;background:linear-gradient(135deg,#1E3A8A,#2563EB);border:none;border-radius:12px;cursor:pointer;width:100%;font-family:inherit">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📋</div>
+          <div style="flex:1;text-align:right">
+            <p style="color:#fff;font-weight:700;font-size:13px;margin:0">الكنترول</p>
+            <p style="color:rgba(255,255,255,.5);font-size:11px;margin:0;font-family:monospace;direction:ltr">ctrl / ctrl123</p>
+          </div>
+          <span style="color:rgba(255,255,255,.35);font-size:18px">←</span>
+        </button>
+        <button onclick="quickLogin('notify','1234')"
+          style="display:flex;align-items:center;gap:12px;padding:13px 15px;background:linear-gradient(135deg,#5B21B6,#7C3AED);border:none;border-radius:12px;cursor:pointer;width:100%;font-family:inherit">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📲</div>
+          <div style="flex:1;text-align:right">
+            <p style="color:#fff;font-weight:700;font-size:13px;margin:0">مسؤول التنبيهات</p>
+            <p style="color:rgba(255,255,255,.5);font-size:11px;margin:0;font-family:monospace;direction:ltr">notify / 1234</p>
+          </div>
+          <span style="color:rgba(255,255,255,.35);font-size:18px">←</span>
+        </button>
+      </div>
+      <div id="demoBtns" style="display:none"></div>
     </div>
   </div>
 </div>
@@ -504,19 +532,121 @@ label.lbl{font-size:12px;color:var(--mid);display:block;margin-bottom:5px;font-w
 
 <div id="toast"></div>
 <div id="printArea" style="display:none"></div>
+<div id="loadingMsg" style="display:none;position:fixed;inset:0;background:rgba(11,29,58,.65);z-index:9998;display:none;align-items:center;justify-content:center;flex-direction:column"><div style="width:48px;height:48px;border:3px solid rgba(255,255,255,.2);border-top-color:#F0B429;border-radius:50%;animation:spin .8s linear infinite"></div><p style="color:#fff;font-family:inherit;margin-top:14px;font-size:14px">جارٍ تحميل البيانات...</p></div>
 
 <script>
 
 // ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════
+// SUPABASE — قاعدة البيانات المشتركة
+// ═══════════════════════════════════════════════
+const SUPABASE_URL = "https://sdufrvefwvnojwaxodvd.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkdWZydmVmd3Zub2p3YXhvZHZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNTkxMDgsImV4cCI6MjA5NjkzNTEwOH0.lYqhMc5mvms-TevVxiwFqDlcihvbstzXjUF3D5LnEc8";
+
+async function sbGet(table, match) {
+  const params = new URLSearchParams();
+  params.set("select","*");
+  if(match) Object.entries(match).forEach(function(e){ params.set(e[0],"eq."+e[1]); });
+  try {
+    const r = await fetch(SUPABASE_URL+"/rest/v1/"+table+"?"+params, {
+      headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY},
+      mode:"cors"
+    });
+    return r.ok ? r.json() : [];
+  } catch(e){ console.warn("sbGet:",e.message); return []; }
+}
+
+async function sbUpsert(table, obj) {
+  try {
+    await fetch(SUPABASE_URL+"/rest/v1/"+table, {
+      method:"POST", mode:"cors",
+      headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Prefer":"resolution=merge-duplicates,return=minimal"},
+      body: JSON.stringify(obj)
+    });
+  } catch(e){ console.warn("sbUpsert:",e.message); }
+}
+
+async function sbDelete(table, id) {
+  try {
+    await fetch(SUPABASE_URL+"/rest/v1/"+table+"?id=eq."+id, {
+      method:"DELETE", mode:"cors",
+      headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}
+    });
+  } catch(e){ console.warn("sbDelete:",e.message); }
+}
+
+// نقطة المزامنة في الهيدر
+function showSyncDot(ok) {
+  var dot = document.getElementById("syncDot");
+  if(!dot) return;
+  dot.style.background = ok ? "#22C55E" : "#EF4444";
+  dot.style.opacity = "1";
+  clearTimeout(dot._t);
+  dot._t = setTimeout(function(){ dot.style.opacity="0.35"; }, 2500);
+}
+
+async function saveToCloud() {
+  var settings = {
+    schoolName:state.schoolName, adminPhone:state.adminPhone,
+    subjects:state.subjects, grades:state.grades,
+    stages:state.stages, teachers:state.teachers,
+    users:state.users
+  };
+  await sbUpsert("settings", {id:"main", data:settings, updated_at:new Date().toISOString()});
+  showSyncDot(true);
+}
+
+async function saveBundleToCloud(b) {
+  await sbUpsert("bundles", {id:b.id, data:b, updated_at:new Date().toISOString()});
+  showSyncDot(true);
+}
+
+async function deleteBundleFromCloud(id) {
+  await sbDelete("bundles", id);
+}
+
+async function loadFromCloud() {
+  var dot = document.getElementById("loadingMsg");
+  if(dot) dot.style.display="block";
+  try {
+    // Load settings
+    var rows = await sbGet("settings", {id:"main"});
+    if(rows && rows[0] && rows[0].data) {
+      var d = rows[0].data;
+      ["schoolName","adminPhone","subjects","grades","stages","teachers","users"].forEach(function(k){
+        if(d[k] !== undefined) state[k] = d[k];
+      });
+    }
+    // Load bundles
+    var brows = await sbGet("bundles");
+    if(brows && brows.length) {
+      state.bundles = brows.sort(function(a,b){ return new Date(a.created_at)-new Date(b.created_at); }).map(function(r){ return r.data; });
+    }
+    // Load notifLog
+    var nrows = await sbGet("notif_log");
+    if(nrows && nrows.length) {
+      state.notifLog = nrows.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); }).map(function(r){ return r.data; });
+    }
+  } catch(e){ console.warn("loadFromCloud:",e.message); }
+  finally { if(dot) dot.style.display="none"; }
+}
+
+async function forceSyncAll() {
+  await saveToCloud();
+  for(var i=0;i<state.bundles.length;i++) await saveBundleToCloud(state.bundles[i]);
+  toast("✅ تمت المزامنة الكاملة مع السحابة");
+}
+
 const PALETTE = ["#3B82F6","#8B5CF6","#06B6D4","#F59E0B","#EF4444","#10B981","#F97316","#22C55E","#A855F7","#6366F1","#14B8A6","#64748B"];
 const sc = i => PALETTE[i % PALETTE.length];
 
 let state = {
-  schoolName: "مدرسة النموذجية الثانوية",
-  adminPhone: "+966551121498",   // <--- رقم الواتساب الافتراضي للمدير
-  subjects: ["الكيمياء","الفيزياء","الأحياء","الرياضيات","اللغة العربية","اللغة الإنجليزية"],
+  schoolName: "متابعة سير الاختبارات الإلكتروني",
+  adminPhone: "+966551121498",
+  subjects: ["لغة إنجليزية","رياضيات","علم البيئة","فيزياء","الكفايات اللغوية","أحياء","كيمياء","علوم الأرض والفضاء"],
   grades:   ["أول ثانوي","ثاني ثانوي","ثالث ثانوي"],
   stages: [
     "تم توزيع الأوراق على الطلاب",
@@ -530,11 +660,57 @@ let state = {
     "تم الأرشفة والحفظ",
   ],
   teachers: [
-    { id:"T1", name:"أحمد الغامدي",  phone:"+966501001001", subject:"الكيمياء",      role:"corrector" },
-    { id:"T2", name:"سمر الزهراني",  phone:"+966502002002", subject:"الفيزياء",      role:"reviewer"  },
-    { id:"T3", name:"خالد العتيبي",  phone:"+966503003003", subject:"الأحياء",       role:"auditor"   },
-    { id:"T4", name:"نورة القحطاني", phone:"+966504004004", subject:"الرياضيات",     role:"corrector" },
-    { id:"T5", name:"وليد الشهري",   phone:"+966505005005", subject:"اللغة العربية", role:"reviewer"  },
+    {id:"TBL001",name:"أحمد الغامدي",role:"corrector",subject:"لغة إنجليزية",grade:"أول ثانوي",phone:"+966501001001"},
+    {id:"TBL002",name:"فهد المحبوب",role:"corrector",subject:"لغة إنجليزية",grade:"أول ثانوي",phone:"+966502002002"},
+    {id:"TBL003",name:"فهد السقوفي",role:"corrector",subject:"لغة إنجليزية",grade:"أول ثانوي",phone:"+966503003003"},
+    {id:"TBL004",name:"فهد العودة",role:"reviewer",subject:"لغة إنجليزية",grade:"أول ثانوي",phone:"+966504004004"},
+    {id:"TBL005",name:"عبدالرحمن العمري",role:"auditor",subject:"لغة إنجليزية",grade:"أول ثانوي",phone:"+966505005005"},
+    {id:"TBL006",name:"عبدالعزيز القحطاني",role:"corrector",subject:"رياضيات",grade:"أول ثانوي",phone:"+966506006006"},
+    {id:"TBL007",name:"فيصل المطيري",role:"corrector",subject:"رياضيات",grade:"أول ثانوي",phone:"+966507007007"},
+    {id:"TBL008",name:"عبدالرحمن الجابر",role:"reviewer",subject:"رياضيات",grade:"أول ثانوي",phone:"+966508008008"},
+    {id:"TBL009",name:"حسين القحطاني",role:"auditor",subject:"رياضيات",grade:"أول ثانوي",phone:"+966509009009"},
+    {id:"TBL010",name:"عبدالرحمن الغامدي",role:"corrector",subject:"علم البيئة",grade:"أول ثانوي",phone:"+966510010010"},
+    {id:"TBL011",name:"محمد العلي",role:"reviewer",subject:"علم البيئة",grade:"أول ثانوي",phone:"+966511011011"},
+    {id:"TBL012",name:"عبد الله العنزي",role:"auditor",subject:"علم البيئة",grade:"أول ثانوي",phone:"+966512012012"},
+    {id:"TBL013",name:"بدر الحربي",role:"auditor",subject:"علم البيئة",grade:"أول ثانوي",phone:"+966513013013"},
+    {id:"TBL014",name:"أسامة الحارثي",role:"corrector",subject:"فيزياء",grade:"أول ثانوي",phone:"+966514014014"},
+    {id:"TBL015",name:"فهد الدوسري",role:"corrector",subject:"فيزياء",grade:"أول ثانوي",phone:"+966515015015"},
+    {id:"TBL016",name:"بندر الزهراني",role:"reviewer",subject:"فيزياء",grade:"أول ثانوي",phone:"+966516016016"},
+    {id:"TBL017",name:"فارس الغامدي",role:"auditor",subject:"فيزياء",grade:"أول ثانوي",phone:"+966517017017"},
+    {id:"TBL018",name:"خالد القحطاني",role:"corrector",subject:"الكفايات اللغوية",grade:"أول ثانوي",phone:"+966518018018"},
+    {id:"TBL019",name:"محمد العميري",role:"corrector",subject:"الكفايات اللغوية",grade:"أول ثانوي",phone:"+966519019019"},
+    {id:"TBL020",name:"إبراهيم السلمي",role:"reviewer",subject:"الكفايات اللغوية",grade:"أول ثانوي",phone:"+966520020020"},
+    {id:"TBL021",name:"محمد عياشي",role:"auditor",subject:"الكفايات اللغوية",grade:"أول ثانوي",phone:"+966521021021"},
+    {id:"TBL022",name:"أحمد أبو ملحة",role:"corrector",subject:"لغة إنجليزية",grade:"ثاني ثانوي",phone:"+966522022022"},
+    {id:"TBL023",name:"عبدالملك الصقعبي",role:"corrector",subject:"لغة إنجليزية",grade:"ثاني ثانوي",phone:"+966523023023"},
+    {id:"TBL024",name:"سعد الرشيدي",role:"reviewer",subject:"لغة إنجليزية",grade:"ثاني ثانوي",phone:"+966524024024"},
+    {id:"TBL025",name:"محمد العلي",role:"auditor",subject:"لغة إنجليزية",grade:"ثاني ثانوي",phone:"+966525025025"},
+    {id:"TBL026",name:"محمد الزايدي",role:"corrector",subject:"رياضيات",grade:"ثاني ثانوي",phone:"+966526026026"},
+    {id:"TBL027",name:"أسعيد السهمي",role:"corrector",subject:"رياضيات",grade:"ثاني ثانوي",phone:"+966527027027"},
+    {id:"TBL028",name:"فهد السقوفي",role:"reviewer",subject:"رياضيات",grade:"ثاني ثانوي",phone:"+966528028028"},
+    {id:"TBL029",name:"محمد ال عقيل",role:"auditor",subject:"رياضيات",grade:"ثاني ثانوي",phone:"+966529029029"},
+    {id:"TBL030",name:"ناصر المالكي",role:"corrector",subject:"أحياء",grade:"ثاني ثانوي",phone:"+966530030030"},
+    {id:"TBL031",name:"محمد العلي",role:"corrector",subject:"أحياء",grade:"ثاني ثانوي",phone:"+966531031031"},
+    {id:"TBL032",name:"عبدالملك الصقعبي",role:"reviewer",subject:"أحياء",grade:"ثاني ثانوي",phone:"+966532032032"},
+    {id:"TBL033",name:"أسامة الحارثي",role:"auditor",subject:"أحياء",grade:"ثاني ثانوي",phone:"+966533033033"},
+    {id:"TBL034",name:"سعد الرشيدي",role:"corrector",subject:"كيمياء",grade:"ثاني ثانوي",phone:"+966534034034"},
+    {id:"TBL035",name:"محمد ال عقيل",role:"corrector",subject:"كيمياء",grade:"ثاني ثانوي",phone:"+966535035035"},
+    {id:"TBL036",name:"عبد الله حمدي",role:"corrector",subject:"كيمياء",grade:"ثاني ثانوي",phone:"+966536036036"},
+    {id:"TBL037",name:"فهد المحبوب",role:"reviewer",subject:"كيمياء",grade:"ثاني ثانوي",phone:"+966537037037"},
+    {id:"TBL038",name:"فيصل الغفيلي",role:"auditor",subject:"كيمياء",grade:"ثاني ثانوي",phone:"+966538038038"},
+    {id:"TBL039",name:"نايف الحواس",role:"corrector",subject:"لغة إنجليزية",grade:"ثالث ثانوي",phone:"+966539039039"},
+    {id:"TBL040",name:"محمد العميري",role:"reviewer",subject:"لغة إنجليزية",grade:"ثالث ثانوي",phone:"+966540040040"},
+    {id:"TBL041",name:"ناصر المالكي",role:"auditor",subject:"لغة إنجليزية",grade:"ثالث ثانوي",phone:"+966541041041"},
+    {id:"TBL042",name:"إبراهيم القحطاني",role:"corrector",subject:"رياضيات",grade:"ثالث ثانوي",phone:"+966542042042"},
+    {id:"TBL043",name:"بدر الحربي",role:"corrector",subject:"رياضيات",grade:"ثالث ثانوي",phone:"+966543043043"},
+    {id:"TBL044",name:"صقر العنزي",role:"reviewer",subject:"رياضيات",grade:"ثالث ثانوي",phone:"+966544044044"},
+    {id:"TBL045",name:"عبدالرحمن الغامدي",role:"auditor",subject:"رياضيات",grade:"ثالث ثانوي",phone:"+966545045045"},
+    {id:"TBL046",name:"محمد عياشي",role:"corrector",subject:"فيزياء",grade:"ثالث ثانوي",phone:"+966546046046"},
+    {id:"TBL047",name:"فهد الدوسري",role:"corrector",subject:"فيزياء",grade:"ثالث ثانوي",phone:"+966547047047"},
+    {id:"TBL048",name:"محمد الزايدي",role:"reviewer",subject:"فيزياء",grade:"ثالث ثانوي",phone:"+966548048048"},
+    {id:"TBL049",name:"عبدالله الشهري",role:"auditor",subject:"فيزياء",grade:"ثالث ثانوي",phone:"+966549049049"},
+    {id:"TBL050",name:"عبدالله الشهري",role:"corrector",subject:"علوم الأرض والفضاء",grade:"ثالث ثانوي",phone:"+966550050050"},
+    {id:"TBL051",name:"فيصل المطيري",role:"auditor",subject:"علوم الأرض والفضاء",grade:"ثالث ثانوي",phone:"+966551051051"},
   ],
   users: [
     { id:"U1", name:"مدير النظام",        username:"admin",   password:"admin123", role:"admin"      },
@@ -660,6 +836,22 @@ function renderLoginDemos() {
   document.getElementById("loginSchoolName").textContent = state.schoolName;
 }
 
+
+function quickLogin(username, password) {
+  var allUsers = (state.users && state.users.length > 0) ? state.users : [
+    {id:"U1",name:"مدير النظام",      username:"admin",  password:"admin123", role:"admin"},
+    {id:"U2",name:"الكنترول",         username:"ctrl",   password:"ctrl123",  role:"controller"},
+    {id:"U3",name:"مسؤول التنبيهات", username:"notify", password:"1234",     role:"notifier"}
+  ];
+  var found = null;
+  for(var i=0;i<allUsers.length;i++){
+    if(allUsers[i].username===username && allUsers[i].password===password){ found=allUsers[i]; break; }
+  }
+  if(!found){ toast("حساب غير موجود","err"); return; }
+  try{ sessionStorage.setItem("examSession",JSON.stringify({username:found.username})); }catch(e){}
+  enterShell(found);
+}
+
 function doLogin() {
   const u = document.getElementById("loginUser").value.trim();
   const p = document.getElementById("loginPass").value;
@@ -677,7 +869,7 @@ function doLogin() {
     document.getElementById("hRole").style.cssText = `background:${bg};color:${col};padding:4px 12px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.3px`;
     document.getElementById("hUser").textContent = found.name;
     renderNav();
-    const defaultPage = PAGES[found.role]?.[0]?.k || "ctrl_scan";
+    const defaultPage = (PAGES[found.role]&&PAGES[found.role][0]?PAGES[found.role][0].k:null) || "ctrl_scan";
     navigateTo(defaultPage);
   } else {
     errEl.textContent="بيانات الدخول غير صحيحة";
@@ -688,6 +880,25 @@ function doLogin() {
 document.addEventListener("keydown", e => {
   if(e.key==="Enter" && !currentUser) doLogin();
 });
+
+
+function enterShell(found, page) {
+  currentUser = found;
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("appShell").style.display    = "flex";
+  document.getElementById("hSchool").textContent = state.schoolName || "متابعة سير الاختبارات الإلكتروني";
+  var ROLE_COLORS_L = {admin:["#92610A","#FEF3C7"],controller:["#1E40AF","#DBEAFE"],notifier:["#5B21B6","#EDE9FE"]};
+  var ROLE_LABELS_L = {admin:"مدير النظام",controller:"الكنترول",notifier:"مسؤول التنبيهات"};
+  var ROLE_ICONS_L  = {admin:"🔑",controller:"📋",notifier:"📲"};
+  var colors = ROLE_COLORS_L[found.role]||["#888","#eee"];
+  var hRole = document.getElementById("hRole");
+  if(hRole){ hRole.textContent=(ROLE_ICONS_L[found.role]||"")+" "+(ROLE_LABELS_L[found.role]||found.role); hRole.style.cssText="background:"+colors[1]+";color:"+colors[0]+";padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700"; }
+  var hUser = document.getElementById("hUser");
+  if(hUser) hUser.textContent = found.name;
+  renderNav();
+  var pg = page || (PAGES[found.role] && PAGES[found.role][0] ? PAGES[found.role][0].k : "ctrl_scan");
+  navigateTo(pg);
+}
 
 function doLogout() {
   currentUser=null; currentPage="";
@@ -833,11 +1044,11 @@ function submitNewBundle() {
   const reviewer  = document.getElementById("bf_reviewer").value;
   const auditor   = document.getElementById("bf_auditor").value;
   const note      = document.getElementById("bf_note").value;
-  const examDay   = document.getElementById("bf_day")?.value||"";
-  const examDate  = document.getElementById("bf_examdate")?.value||"";
-  const examHall  = document.getElementById("bf_hall")?.value||"";
-  const examStart = document.getElementById("bf_start")?.value||"";
-  const examEnd   = document.getElementById("bf_end")?.value||"";
+  const examDay   = (document.getElementById("bf_day")||{value:""}).value||"";
+  const examDate  = (document.getElementById("bf_examdate")||{value:""}).value||"";
+  const examHall  = (document.getElementById("bf_hall")||{value:""}).value||"";
+  const examStart = (document.getElementById("bf_start")||{value:""}).value||"";
+  const examEnd   = (document.getElementById("bf_end")||{value:""}).value||"";
   if(!subject) { toast("اختر المادة","err"); return; }
   if(!count||isNaN(count)||+count<1) { toast("أدخل عدد الأوراق","err"); return; }
   const b = {
@@ -1028,12 +1239,14 @@ function saveEditBundle(id) {
   b.corrector = document.getElementById("eb_corrector").value;
   b.reviewer  = document.getElementById("eb_reviewer").value;
   b.auditor   = document.getElementById("eb_auditor").value;
-  b.examDay   = document.getElementById("eb_day")?.value||b.examDay||"";
-  b.examDate  = document.getElementById("eb_examdate")?.value||b.examDate||"";
-  b.examHall  = document.getElementById("eb_hall")?.value||b.examHall||"";
-  b.examStart = document.getElementById("eb_start")?.value||b.examStart||"";
-  b.examEnd   = document.getElementById("eb_end")?.value||b.examEnd||"";
+  b.examDay   = (document.getElementById("eb_day")||{value:""}).value||b.examDay||"";
+  b.examDate  = (document.getElementById("eb_examdate")||{value:""}).value||b.examDate||"";
+  b.examHall  = (document.getElementById("eb_hall")||{value:""}).value||b.examHall||"";
+  b.examStart = (document.getElementById("eb_start")||{value:""}).value||b.examStart||"";
+  b.examEnd   = (document.getElementById("eb_end")||{value:""}).value||b.examEnd||"";
   saveState();
+  saveState();
+  saveBundleToCloud(b);
   document.getElementById("editOverlay").remove();
   toast("تم حفظ التعديلات ✅");
   renderAdminList(document.getElementById("pageContent"));
@@ -1316,7 +1529,7 @@ function renderStageSelector() {
 function doAdvance() {
   if(_confirmStg===null||!_scanHit)return;
   const idx=_confirmStg;
-  const note=document.getElementById("stageNote")?.value||"";
+  const note=(document.getElementById("stageNote")||{value:""}).value||"";
   const entry={stageIdx:idx, stageLabel:state.stages[idx], ts:nowISO(), user:currentUser.name, note};
   const b=state.bundles.find(x=>x.id===_scanHit.id);
   if(!b)return;
@@ -1437,12 +1650,12 @@ function updatePreview() {
   const msg=msgEl.value.trim();
   if(!msg||_selTeachers.length===0){ prevEl.innerHTML=""; return; }
   const nt=NOTIFY_TYPES.find(t=>t.key===_selType);
-  const names=_selTeachers.map(id=>state.teachers.find(t=>t.id===id)?.name||"").filter(Boolean).join("، ");
+  const names=_selTeachers.map(id=>(state.teachers.find(function(t){return t.id===id;})||{name:""}).name||"").filter(Boolean).join("، ");
   prevEl.innerHTML=`
   <div style="background:var(--bg);border-radius:10px;padding:12px 14px;border:1px solid var(--border)">
     <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:6px">معاينة الرسالة</p>
-    <div style="background:var(--white);border-radius:8px;padding:12px 14px;border:1px solid ${nt?.color||"var(--border)"}40">
-      <p style="font-weight:800;color:${nt?.color};font-size:13px;margin-bottom:4px">${nt?.icon} ${nt?.label}</p>
+    <div style="background:var(--white);border-radius:8px;padding:12px 14px;border:1px solid ${(nt&&nt.color)||"var(--border)"}40">
+      <p style="font-weight:800;color:${(nt&&nt.color)};font-size:13px;margin-bottom:4px">${(nt&&nt.icon)} ${(nt&&nt.label)}</p>
       <p style="font-size:13px;color:var(--text);margin-bottom:4px">${msg}</p>
       <p style="font-size:11px;color:var(--muted)">إلى: ${names}</p>
     </div>
@@ -1451,20 +1664,20 @@ function updatePreview() {
 
 function sendNotif() {
   if(_selTeachers.length===0){ toast("اختر معلماً على الأقل","err"); return; }
-  const msg=document.getElementById("notif_msg")?.value.trim();
+  const msg=(document.getElementById("notif_msg")||{value:""}).value.trim();
   if(!msg){ toast("أدخل نص الرسالة","err"); return; }
   const nt=NOTIFY_TYPES.find(t=>t.key===_selType);
   const bundle=state.bundles.find(b=>b.id===_selBundle)||null;
   const teachers=_selTeachers.map(id=>state.teachers.find(t=>t.id===id)).filter(Boolean);
 
   // Full WA message
-  const fullMsg=`*${nt?.icon} ${nt?.label}*\n${state.schoolName}\n\n${msg}${bundle?`\n\nالمظروف: ${bundle.barcode} — ${bundle.subject}`:""}\n\n— ${currentUser.name}`;
+  const fullMsg=`*${(nt&&nt.icon)} ${(nt&&nt.label)}*\n${state.schoolName}\n\n${msg}${bundle?`\n\nالمظروف: ${bundle.barcode} — ${bundle.subject}`:""}\n\n— ${currentUser.name}`;
 
   // Save to log
   // notifLog saved after push
   state.notifLog.unshift({
     id:uid(), ts:nowISO(), type:_selType,
-    typeLabel:nt?.label, typeColor:nt?.color, typeIcon:nt?.icon,
+    typeLabel:(nt&&nt.label), typeColor:(nt&&nt.color), typeIcon:(nt&&nt.icon),
     teachers, message:msg, bundle, sentBy:currentUser.name, waMsg:fullMsg,
   });
   saveState();
@@ -1554,7 +1767,7 @@ function renderSGeneral(el) {
       state.schoolName=document.getElementById('s_school').value||state.schoolName;
       document.getElementById('hSchool').textContent=state.schoolName;
       document.getElementById('loginSchoolName').textContent=state.schoolName;
-      saveState();toast('تم الحفظ ✅')">💾 حفظ</button>
+      saveState();saveToCloud();toast('تم الحفظ ✅')">💾 حفظ</button>
     <button class="btn" style="background:var(--red)" onclick="
       if(confirm('هل تريد حذف جميع البيانات المحفوظة واستعادة الإعدادات الافتراضية؟
 تحذير: سيتم حذف جميع المظاريف والتعديلات!')){
@@ -1699,10 +1912,10 @@ function renderSTeachers(el) {
 }
 
 function addTeacher() {
-  const name  = document.getElementById("nt_name")?.value.trim();
-  const phone = document.getElementById("nt_phone")?.value.trim();
-  const subject=document.getElementById("nt_subject")?.value;
-  const role  = document.getElementById("nt_role")?.value;
+  const name  = (document.getElementById("nt_name")||{value:""}).value.trim();
+  const phone = (document.getElementById("nt_phone")||{value:""}).value.trim();
+  const subject=(document.getElementById("nt_subject")||{value:""}).value;
+  const role  = (document.getElementById("nt_role")||{value:""}).value;
   if(!name||!phone){ toast("أدخل الاسم ورقم الواتساب","err"); return; }
   state.teachers.push({ id:"T"+uid(), name, phone, subject, role });
   saveState();
@@ -1743,7 +1956,7 @@ function renderSUsers(el) {
             <span style="font-size:11px;color:var(--muted);margin-right:5px;font-family:monospace">${u.username}</span>
           </div>
           <span class="tag" style="background:${bg};color:${col}">${ROLE_LABEL[u.role]||u.role}</span>
-          ${u.id!==currentUser?.id?`<button class="del-btn" onclick="state.users=state.users.filter(x=>x.id!='${u.id}');saveState();renderSTabContent()">×</button>`:""}
+          ${u.id!==(currentUser&&currentUser.id)?`<button class="del-btn" onclick="state.users=state.users.filter(x=>x.id!='${u.id}');saveState();renderSTabContent()">×</button>`:""}
         </div>`;
       }).join("")}
     </div>
@@ -1766,10 +1979,10 @@ function renderSUsers(el) {
 }
 
 function addUser() {
-  const name=document.getElementById("nu_name")?.value.trim();
-  const username=document.getElementById("nu_user")?.value.trim();
-  const password=document.getElementById("nu_pass")?.value;
-  const role=document.getElementById("nu_role")?.value;
+  const name=(document.getElementById("nu_name")||{value:""}).value.trim();
+  const username=(document.getElementById("nu_user")||{value:""}).value.trim();
+  const password=(document.getElementById("nu_pass")||{value:""}).value;
+  const role=(document.getElementById("nu_role")||{value:""}).value;
   if(!name||!username||!password){ toast("أكمل البيانات","err"); return; }
   if(state.users.find(u=>u.username===username)){ toast("اسم المستخدم موجود مسبقاً","err"); return; }
   state.users.push({ id:"U"+uid(), name, username, password, role });
@@ -2283,8 +2496,37 @@ function confirmBulkImport(teachers) {
 // ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
-loadState();          // ← restore from localStorage on page load
 renderLoginDemos();
+
+(async function() {
+  // Load from cloud (non-blocking)
+  try {
+    var ldg = document.getElementById("loadingMsg");
+    if(ldg){ ldg.style.display="flex"; }
+    await loadFromCloud();
+    if(ldg){ ldg.style.display="none"; }
+  } catch(e) {
+    var ldg = document.getElementById("loadingMsg");
+    if(ldg) ldg.style.display="none";
+    console.warn("Cloud load failed, using local:", e.message);
+  }
+
+  // Restore session
+  try {
+    var raw = sessionStorage.getItem("examSession");
+    if(raw) {
+      var sess = JSON.parse(raw);
+      var allU = (state.users && state.users.length) ? state.users : [
+        {id:"U1",name:"مدير النظام",username:"admin",password:"admin123",role:"admin"},
+        {id:"U2",name:"الكنترول",username:"ctrl",password:"ctrl123",role:"controller"},
+        {id:"U3",name:"مسؤول التنبيهات",username:"notify",password:"1234",role:"notifier"}
+      ];
+      var found = null;
+      for(var i=0;i<allU.length;i++){ if(allU[i].username===sess.username){found=allU[i];break;} }
+      if(found) enterShell(found);
+    }
+  } catch(e){}
+})();
 
 </script>
 </body>
