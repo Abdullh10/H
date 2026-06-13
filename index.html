@@ -593,14 +593,17 @@ async function saveToCloud() {
     schoolName:state.schoolName, adminPhone:state.adminPhone,
     subjects:state.subjects, grades:state.grades,
     stages:state.stages, teachers:state.teachers,
-    users:state.users
+    users:state.users, examSchedule:state.examSchedule||[]
   };
   await sbUpsert("settings", {id:"main", data:settings, updated_at:new Date().toISOString()});
+  // Also save to localStorage as backup
+  saveState();
   showSyncDot(true);
 }
 
 async function saveBundleToCloud(b) {
   await sbUpsert("bundles", {id:b.id, data:b, updated_at:new Date().toISOString()});
+  saveState();
   showSyncDot(true);
 }
 
@@ -616,7 +619,7 @@ async function loadFromCloud() {
     var rows = await sbGet("settings", {id:"main"});
     if(rows && rows[0] && rows[0].data) {
       var d = rows[0].data;
-      ["schoolName","adminPhone","subjects","grades","stages","teachers","users"].forEach(function(k){
+      ["schoolName","adminPhone","subjects","grades","stages","teachers","users","examSchedule"].forEach(function(k){
         if(d[k] !== undefined) state[k] = d[k];
       });
     }
@@ -802,8 +805,10 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
-    // Merge saved into state (keep defaults for any missing keys)
-    Object.keys(saved).forEach(k => { state[k] = saved[k]; });
+    // Restore ALL saved keys into state (overrides hardcoded defaults)
+    Object.keys(saved).forEach(k => {
+      if (saved[k] !== undefined && saved[k] !== null) state[k] = saved[k];
+    });
   } catch(e) { console.warn("loadState failed:", e); }
 }
 
@@ -2496,22 +2501,27 @@ function confirmBulkImport(teachers) {
 // ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
+// ── INIT ─────────────────────────────────────────
+// 1) Load localStorage FIRST so state is populated before anything renders
+loadState();
 renderLoginDemos();
 
 (async function() {
-  // Load from cloud (non-blocking)
+  // 2) Then try to sync from cloud (may overwrite with newer data)
   try {
     var ldg = document.getElementById("loadingMsg");
     if(ldg){ ldg.style.display="flex"; }
     await loadFromCloud();
     if(ldg){ ldg.style.display="none"; }
+    // After cloud load, also persist to localStorage so next refresh is instant
+    saveState();
   } catch(e) {
     var ldg = document.getElementById("loadingMsg");
     if(ldg) ldg.style.display="none";
     console.warn("Cloud load failed, using local:", e.message);
   }
 
-  // Restore session
+  // 3) Restore session
   try {
     var raw = sessionStorage.getItem("examSession");
     if(raw) {
